@@ -84,13 +84,15 @@ export async function branchesAheadOfStaging(): Promise<BranchAhead[]> {
     const staging = config.stagingBranch;
     const live = config.liveBranch;
 
-    // enumerate remote branches
-    const raw = await g.raw(["for-each-ref", "--format=%(refname:short)", "refs/remotes/origin"]);
+    // enumerate remote branches. Use the FULL refname (not :short) so the
+    // symbolic ref refs/remotes/origin/HEAD reduces to "HEAD" (and is filtered),
+    // rather than shortening to "origin" and slipping through as a bogus branch.
+    const raw = await g.raw(["for-each-ref", "--format=%(refname)", "refs/remotes/origin"]);
     const branches = raw
       .split("\n")
       .map((s) => s.trim())
       .filter(Boolean)
-      .map((s) => s.replace(/^origin\//, ""))
+      .map((s) => s.replace(/^refs\/remotes\/origin\//, ""))
       .filter((b) => b && b !== "HEAD" && b !== staging && b !== live);
 
     const out: BranchAhead[] = [];
