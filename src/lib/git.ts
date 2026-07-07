@@ -51,25 +51,44 @@ function git(dir: string): SimpleGit {
   return simpleGit({ baseDir: dir, maxConcurrentProcesses: 1 });
 }
 
-/** Ensure the clone exists and origin/* refs are current. Returns a SimpleGit at the clone. */
-async function ensureRepo(): Promise<SimpleGit> {
+// Throttle network fetches: a single buildConsoleState calls ensureRepo ~4x, and
+// browser reloads come in bursts. Fetching (and minting an App token) every time
+// made each load take several seconds. We fetch at most once per FETCH_TTL_MS;
+// within that window the local origin/* refs are reused. force=true bypasses it
+// (used right before/after a write so we act on current refs).
+let lastFetchAt = 0;
+const FETCH_TTL_MS = 10_000;
+
+/** Force the next ensureRepo() to fetch (used by the manual Refresh button). */
+export function forceNextFetch(): void {
+  lastFetchAt = 0;
+}
+
+/** Ensure the clone exists and origin/* refs are reasonably current. */
+async function ensureRepo(force = false): Promise<SimpleGit> {
   const dir = config.clonePath;
-  const authed = await authedRemoteUrl();
   const plain = `https://github.com/${config.owner}/${config.repo}.git`;
 
   if (!fs.existsSync(path.join(dir, ".git"))) {
     fs.mkdirSync(path.dirname(dir), { recursive: true });
     // Deterministic raw command: git clone --no-single-branch <url> <dir>
     // (the simple-git .clone()/.fetch() wrappers mis-ordered the url vs refspec).
+    const authed = await authedRemoteUrl();
     const g0 = simpleGit({ maxConcurrentProcesses: 1 });
     await g0.raw(["clone", "--no-single-branch", authed, dir]);
     // strip the token out of persisted config immediately
     await git(dir).raw(["remote", "set-url", "origin", plain]);
+    lastFetchAt = Date.now();
   }
 
   const g = git(dir);
-  // git fetch --prune <url> +refs/heads/*:refs/remotes/origin/*
-  await g.raw(["fetch", "--prune", authed, "+refs/heads/*:refs/remotes/origin/*"]);
+  const now = Date.now();
+  if (force || now - lastFetchAt > FETCH_TTL_MS) {
+    // Mint the token only when we actually fetch (it's a network call too).
+    const authed = await authedRemoteUrl();
+    await g.raw(["fetch", "--prune", authed, "+refs/heads/*:refs/remotes/origin/*"]);
+    lastFetchAt = now;
+  }
   return g;
 }
 
@@ -285,7 +304,7 @@ export async function mergeAndPush(
   message: string
 ): Promise<MergeResult> {
   return withLock(async () => {
-    const g = await ensureRepo();
+    const g = await ensureRepo(true);
     const dir = newWorktreeDir();
     // Work on an actual branch so the push ref is clean.
     await g.raw(["worktree", "add", "-B", `_deploy_${target}`, dir, remoteRef(target)]);
@@ -353,7 +372,7 @@ export async function revertOnBranch(
   message: string
 ): Promise<MergeResult> {
   return withLock(async () => {
-    const g = await ensureRepo();
+    const g = await ensureRepo(true);
     const dir = newWorktreeDir();
     await g.raw(["worktree", "add", "-B", `_deploy_${target}`, dir, remoteRef(target)]);
     const wt = git(dir);

@@ -327,9 +327,11 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
   const [toast, setToast] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
+  const [refreshing, setRefreshing] = useState(false);
+
+  const load = useCallback(async (force = false) => {
     try {
-      const res = await fetch("/api/state", { cache: "no-store" });
+      const res = await fetch(`/api/state${force ? "?force=1" : ""}`, { cache: "no-store" });
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
         setError(j.detail || j.error || `Failed to load (${res.status})`);
@@ -342,9 +344,18 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
     }
   }, []);
 
+  // Manual Refresh: force fresh refs from GitHub + show feedback (the load can
+  // take a moment, so an unindicated click looks like nothing happened).
+  const refresh = useCallback(async () => {
+    setRefreshing(true);
+    await load(true);
+    setRefreshing(false);
+    setToast("Refreshed.");
+  }, [load]);
+
   useEffect(() => {
     load();
-    const t = setInterval(load, 20000);
+    const t = setInterval(() => load(), 20000);
     return () => clearInterval(t);
   }, [load]);
 
@@ -481,6 +492,7 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
         .card { transition: box-shadow .2s ease; }
         .card:hover { box-shadow: 0 4px 16px rgba(24,36,46,.07); }
         button:focus-visible, a:focus-visible { outline: 2px solid ${C.accent}; outline-offset: 2px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
         @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
       `}</style>
 
@@ -505,12 +517,14 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={load}
+              onClick={refresh}
+              disabled={refreshing}
               className="inline-flex items-center gap-2"
               title="Refresh"
-              style={{ background: C.paper, border: `1px solid ${C.line}`, borderRadius: 999, padding: "7px 11px", cursor: "pointer", color: C.muted, fontSize: 13 }}
+              style={{ background: C.paper, border: `1px solid ${C.line}`, borderRadius: 999, padding: "7px 11px", cursor: refreshing ? "default" : "pointer", color: C.muted, fontSize: 13 }}
             >
-              <RefreshCw size={14} /> Refresh
+              <RefreshCw size={14} style={{ animation: refreshing ? "spin 0.8s linear infinite" : "none" }} />
+              {refreshing ? "Refreshing…" : "Refresh"}
             </button>
             {isAdmin && (
               <Link
