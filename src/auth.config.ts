@@ -11,6 +11,7 @@ import GitHub from "next-auth/providers/github";
 export const authConfig = {
   trustHost: true,
   secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.AUTH_DEBUG === "true",
   session: { strategy: "jwt" },
   pages: { signIn: "/login" },
   providers: [
@@ -18,6 +19,19 @@ export const authConfig = {
       clientId: process.env.AUTH_GITHUB_ID,
       clientSecret: process.env.AUTH_GITHUB_SECRET,
       authorization: { params: { scope: "read:user user:email read:org repo" } },
+      // Crash-safe mapping: if GitHub returned an error body (no id), log the raw
+      // response instead of throwing OAuthProfileParseError on undefined.toString().
+      profile(profile) {
+        if (!profile || profile.id == null) {
+          console.error("[auth] GitHub /user returned no id. Raw:", JSON.stringify(profile));
+        }
+        return {
+          id: profile?.id != null ? String(profile.id) : `no-id`,
+          name: profile?.name ?? profile?.login ?? null,
+          email: profile?.email ?? null,
+          image: profile?.avatar_url ?? null,
+        };
+      },
     }),
   ],
   callbacks: {
