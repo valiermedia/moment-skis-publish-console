@@ -16,6 +16,7 @@
     "better-sqlite3": "^11.8.1",
     "eslint-config-next": "^15.5.20",
     "lucide-react": "^0.487.0",
+    "marked": "^15.0.12",
     "next": "^15.5.20",
     "next-auth": "5.0.0-beta.25",
     "react": "19.0.0",

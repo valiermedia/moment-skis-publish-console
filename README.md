@@ -10,6 +10,10 @@ and this console moves that work **up to a shared `staging` branch** and finally
 > a git merge (`staging → live`); Shopify auto-publishes because the `live` branch is
 > connected to the already-published theme. The Shopify token is **read-only**.
 
+**Team docs:** the theme-editing guardrail primer (for teammates + their Claude) is
+[`MOMENT-SKIS-THEME-EDITING.md`](./MOMENT-SKIS-THEME-EDITING.md), also served publicly
+(no login) at **https://moment-skis.valier.dev/theme-editing**.
+
 ---
 
 ## How the workflow maps to git
