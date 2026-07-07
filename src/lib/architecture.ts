@@ -45,11 +45,38 @@ export interface ArchEdge {
   type: string;
   detail: string;
 }
+export interface Template {
+  template: string;
+  file: string;
+  variant: string;
+  format: "json" | "liquid";
+  sections: string[];
+}
+export interface PageType {
+  id: string;
+  label: string;
+  url: string;
+  order: number;
+  templateCount: number;
+  templates: Template[];
+}
+export interface Sitemap {
+  pageTypes: PageType[];
+  global: {
+    header: string[];
+    footer: string[];
+    snippets: string[];
+    assets: string[];
+    layoutFile: string | null;
+  };
+}
+
 export interface BranchArchitecture {
   branch: string;
   themeId: number | null;
   analyzedAt: string | null;
-  counts: { files: number; features: number; edges: number; featureEdges: number };
+  counts: { files: number; features: number; edges: number; featureEdges: number; pageTypes?: number };
+  sitemap: Sitemap;
   features: Feature[];
   files: ArchFile[];
   edges: ArchEdge[];

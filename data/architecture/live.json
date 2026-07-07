@@ -1,12 +1,1043 @@
 {
   "branch": "live",
   "themeId": 162043560193,
-  "analyzedAt": "2026-07-07T21:45:09.546Z",
+  "analyzedAt": "2026-07-07T23:50:09.926Z",
   "counts": {
     "files": 428,
-    "features": 97,
-    "edges": 1075,
-    "featureEdges": 88
+    "features": 95,
+    "edges": 1310,
+    "featureEdges": 88,
+    "pageTypes": 13
+  },
+  "sitemap": {
+    "pageTypes": [
+      {
+        "id": "index",
+        "label": "Home",
+        "url": "/",
+        "order": 0,
+        "templateCount": 1,
+        "templates": [
+          {
+            "template": "index",
+            "file": "templates/index.json",
+            "variant": "default",
+            "format": "json",
+            "sections": [
+              "slideshow",
+              "image-with-text-overlay",
+              "featured-promotions",
+              "image-with-text-overlay",
+              "slideshow",
+              "image-with-text-overlay",
+              "featured-promotions",
+              "moment-category-row",
+              "moment-newsletter",
+              "moment-feature-cards"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "product",
+        "label": "Product",
+        "url": "/products/…",
+        "order": 1,
+        "templateCount": 13,
+        "templates": [
+          {
+            "template": "product",
+            "file": "templates/product.json",
+            "variant": "default",
+            "format": "json",
+            "sections": [
+              "product-sidebar",
+              "product-template",
+              "product-icons-section",
+              "tabs",
+              "image-text",
+              "apps",
+              "product-recommendations"
+            ]
+          },
+          {
+            "template": "product.alternating-text-and-images",
+            "file": "templates/product.alternating-text-and-images.json",
+            "variant": "alternating-text-and-images",
+            "format": "json",
+            "sections": [
+              "product-sidebar",
+              "product-template",
+              "tabs",
+              "image-text",
+              "apps",
+              "product-recommendations"
+            ]
+          },
+          {
+            "template": "product.call-to-order",
+            "file": "templates/product.call-to-order.json",
+            "variant": "call-to-order",
+            "format": "json",
+            "sections": [
+              "product-sidebar",
+              "product-template",
+              "product-icons-section",
+              "tabs",
+              "image-text",
+              "apps",
+              "product-recommendations"
+            ]
+          },
+          {
+            "template": "product.description-bottom",
+            "file": "templates/product.description-bottom.liquid",
+            "variant": "description-bottom",
+            "format": "liquid",
+            "sections": [
+              "product-description-bottom-template",
+              "product-recommendations"
+            ]
+          },
+          {
+            "template": "product.full-width-images",
+            "file": "templates/product.full-width-images.liquid",
+            "variant": "full-width-images",
+            "format": "liquid",
+            "sections": [
+              "product-full-width-images-template",
+              "product-recommendations"
+            ]
+          },
+          {
+            "template": "product.quickshop",
+            "file": "templates/product.quickshop.json",
+            "variant": "quickshop",
+            "format": "json",
+            "sections": [
+              "quickshop"
+            ]
+          },
+          {
+            "template": "product.rv",
+            "file": "templates/product.rv.json",
+            "variant": "rv",
+            "format": "json",
+            "sections": [
+              "product-recently-viewed-template",
+              "product-recommendations"
+            ]
+          },
+          {
+            "template": "product.ski",
+            "file": "templates/product.ski.json",
+            "variant": "ski",
+            "format": "json",
+            "sections": [
+              "product-sidebar",
+              "product-template",
+              "product-icons-section",
+              "custom-html",
+              "tabs",
+              "image-text",
+              "product-recommendations",
+              "featured-text",
+              "faq",
+              "divider",
+              "image-with-text-overlay",
+              "divider",
+              "featured-collection",
+              "text-columns-with-images",
+              "apps"
+            ]
+          },
+          {
+            "template": "product.voyager12",
+            "file": "templates/product.voyager12.json",
+            "variant": "voyager12",
+            "format": "json",
+            "sections": [
+              "template-settings",
+              "video",
+              "product-template",
+              "tabs",
+              "featured-text",
+              "image-text",
+              "custom-html",
+              "custom-html",
+              "product-reviews"
+            ]
+          },
+          {
+            "template": "product.voyager13",
+            "file": "templates/product.voyager13.json",
+            "variant": "voyager13",
+            "format": "json",
+            "sections": [
+              "template-settings",
+              "video",
+              "product-template",
+              "product-icons-section",
+              "tabs",
+              "featured-text",
+              "image-text",
+              "custom-html",
+              "custom-html",
+              "product-reviews",
+              "apps"
+            ]
+          },
+          {
+            "template": "product.voyager14",
+            "file": "templates/product.voyager14.json",
+            "variant": "voyager14",
+            "format": "json",
+            "sections": [
+              "template-settings",
+              "video",
+              "product-template",
+              "tabs",
+              "featured-text",
+              "image-text",
+              "custom-html",
+              "custom-html",
+              "product-reviews"
+            ]
+          },
+          {
+            "template": "product.voyager15",
+            "file": "templates/product.voyager15.json",
+            "variant": "voyager15",
+            "format": "json",
+            "sections": [
+              "template-settings",
+              "video",
+              "product-template",
+              "product-icons-section",
+              "tabs",
+              "featured-text",
+              "image-text",
+              "custom-html",
+              "custom-html",
+              "apps"
+            ]
+          },
+          {
+            "template": "product.wpd_product_data",
+            "file": "templates/product.wpd_product_data.liquid",
+            "variant": "wpd_product_data",
+            "format": "liquid",
+            "sections": []
+          }
+        ]
+      },
+      {
+        "id": "collection",
+        "label": "Collection",
+        "url": "/collections/…",
+        "order": 2,
+        "templateCount": 8,
+        "templates": [
+          {
+            "template": "collection",
+            "file": "templates/collection.json",
+            "variant": "default",
+            "format": "json",
+            "sections": [
+              "collection-template"
+            ]
+          },
+          {
+            "template": "collection.23-collection",
+            "file": "templates/collection.23-collection.json",
+            "variant": "23-collection",
+            "format": "json",
+            "sections": [
+              "collection-template",
+              "newsletter"
+            ]
+          },
+          {
+            "template": "collection.apparel",
+            "file": "templates/collection.apparel.json",
+            "variant": "apparel",
+            "format": "json",
+            "sections": [
+              "collection-template"
+            ]
+          },
+          {
+            "template": "collection.bindings",
+            "file": "templates/collection.bindings.json",
+            "variant": "bindings",
+            "format": "json",
+            "sections": [
+              "collection-template"
+            ]
+          },
+          {
+            "template": "collection.fb-product-feed",
+            "file": "templates/collection.fb-product-feed.liquid",
+            "variant": "fb-product-feed",
+            "format": "liquid",
+            "sections": []
+          },
+          {
+            "template": "collection.gear",
+            "file": "templates/collection.gear.json",
+            "variant": "gear",
+            "format": "json",
+            "sections": [
+              "collection-template"
+            ]
+          },
+          {
+            "template": "collection.sub-collections",
+            "file": "templates/collection.sub-collections.json",
+            "variant": "sub-collections",
+            "format": "json",
+            "sections": [
+              "collection-sub-collections-template",
+              "newsletter"
+            ]
+          },
+          {
+            "template": "collection.wpd_collection_data",
+            "file": "templates/collection.wpd_collection_data.liquid",
+            "variant": "wpd_collection_data",
+            "format": "liquid",
+            "sections": []
+          }
+        ]
+      },
+      {
+        "id": "list-collections",
+        "label": "All collections",
+        "url": "/collections",
+        "order": 3,
+        "templateCount": 1,
+        "templates": [
+          {
+            "template": "list-collections",
+            "file": "templates/list-collections.json",
+            "variant": "default",
+            "format": "json",
+            "sections": [
+              "list-collections-template",
+              "newsletter"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "blog",
+        "label": "Blog",
+        "url": "/blogs/…",
+        "order": 4,
+        "templateCount": 1,
+        "templates": [
+          {
+            "template": "blog",
+            "file": "templates/blog.json",
+            "variant": "default",
+            "format": "json",
+            "sections": [
+              "blog-template"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "article",
+        "label": "Article",
+        "url": "/blogs/…/…",
+        "order": 5,
+        "templateCount": 1,
+        "templates": [
+          {
+            "template": "article",
+            "file": "templates/article.json",
+            "variant": "default",
+            "format": "json",
+            "sections": [
+              "article-template",
+              "newsletter"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "page",
+        "label": "Page",
+        "url": "/pages/…",
+        "order": 6,
+        "templateCount": 40,
+        "templates": [
+          {
+            "template": "page",
+            "file": "templates/page.json",
+            "variant": "default",
+            "format": "json",
+            "sections": [
+              "page-template",
+              "divider"
+            ]
+          },
+          {
+            "template": "page.about",
+            "file": "templates/page.about.json",
+            "variant": "about",
+            "format": "json",
+            "sections": [
+              "image-with-text-overlay",
+              "featured-text",
+              "image-text",
+              "featured-text",
+              "image-with-text-overlay",
+              "page-gallery-template"
+            ]
+          },
+          {
+            "template": "page.abyss",
+            "file": "templates/page.abyss.json",
+            "variant": "abyss",
+            "format": "json",
+            "sections": [
+              "video",
+              "image-with-text-overlay",
+              "featured-text",
+              "image-text",
+              "divider",
+              "image-with-text-overlay",
+              "featured-text",
+              "page-gallery-template"
+            ]
+          },
+          {
+            "template": "page.banner",
+            "file": "templates/page.banner.json",
+            "variant": "banner",
+            "format": "json",
+            "sections": [
+              "page-banner-template",
+              "newsletter"
+            ]
+          },
+          {
+            "template": "page.binding-list",
+            "file": "templates/page.binding-list.liquid",
+            "variant": "binding-list",
+            "format": "liquid",
+            "sections": []
+          },
+          {
+            "template": "page.blackfriday",
+            "file": "templates/page.blackfriday.json",
+            "variant": "blackfriday",
+            "format": "json",
+            "sections": [
+              "image-with-text-overlay",
+              "featured-text",
+              "divider",
+              "custom-html",
+              "text-columns-with-images",
+              "custom-html",
+              "text-columns-with-images",
+              "custom-html",
+              "contact-form",
+              "map",
+              "page-multi-column-template",
+              "newsletter"
+            ]
+          },
+          {
+            "template": "page.bootfit",
+            "file": "templates/page.bootfit.json",
+            "variant": "bootfit",
+            "format": "json",
+            "sections": [
+              "featured-text",
+              "logo-bar",
+              "divider",
+              "custom-html",
+              "custom-html",
+              "divider",
+              "text-columns-with-images",
+              "faq",
+              "page-gallery-template"
+            ]
+          },
+          {
+            "template": "page.contact",
+            "file": "templates/page.contact.json",
+            "variant": "contact",
+            "format": "json",
+            "sections": [
+              "custom-html",
+              "custom-html",
+              "contact-template",
+              "featured-text",
+              "divider",
+              "map",
+              "divider"
+            ]
+          },
+          {
+            "template": "page.contact-custom",
+            "file": "templates/page.contact-custom.json",
+            "variant": "contact-custom",
+            "format": "json",
+            "sections": [
+              "contact-custom-template",
+              "newsletter"
+            ]
+          },
+          {
+            "template": "page.demo",
+            "file": "templates/page.demo.liquid",
+            "variant": "demo",
+            "format": "liquid",
+            "sections": [
+              "page-demo-template"
+            ]
+          },
+          {
+            "template": "page.demoseason",
+            "file": "templates/page.demoseason.json",
+            "variant": "demoseason",
+            "format": "json",
+            "sections": [
+              "image-with-text-overlay",
+              "featured-text",
+              "featured-product",
+              "text-columns-with-images",
+              "contact-form",
+              "featured-text",
+              "map",
+              "page-multi-column-template",
+              "newsletter"
+            ]
+          },
+          {
+            "template": "page.details",
+            "file": "templates/page.details.liquid",
+            "variant": "details",
+            "format": "liquid",
+            "sections": [
+              "page-details-template"
+            ]
+          },
+          {
+            "template": "page.details-about",
+            "file": "templates/page.details-about.liquid",
+            "variant": "details-about",
+            "format": "liquid",
+            "sections": [
+              "page-details-about-template"
+            ]
+          },
+          {
+            "template": "page.details-ak",
+            "file": "templates/page.details-ak.liquid",
+            "variant": "details-ak",
+            "format": "liquid",
+            "sections": [
+              "page-details-ak-template"
+            ]
+          },
+          {
+            "template": "page.details-bf",
+            "file": "templates/page.details-bf.liquid",
+            "variant": "details-bf",
+            "format": "liquid",
+            "sections": [
+              "page-details-bf-template"
+            ]
+          },
+          {
+            "template": "page.details-blackfriday",
+            "file": "templates/page.details-blackfriday.liquid",
+            "variant": "details-blackfriday",
+            "format": "liquid",
+            "sections": []
+          },
+          {
+            "template": "page.details-blister",
+            "file": "templates/page.details-blister.liquid",
+            "variant": "details-blister",
+            "format": "liquid",
+            "sections": [
+              "product-details-blister-template"
+            ]
+          },
+          {
+            "template": "page.details-bootfit",
+            "file": "templates/page.details-bootfit.liquid",
+            "variant": "details-bootfit",
+            "format": "liquid",
+            "sections": []
+          },
+          {
+            "template": "page.details-downlow",
+            "file": "templates/page.details-downlow.liquid",
+            "variant": "details-downlow",
+            "format": "liquid",
+            "sections": [
+              "page-details-downlow-template"
+            ]
+          },
+          {
+            "template": "page.details-factory",
+            "file": "templates/page.details-factory.liquid",
+            "variant": "details-factory",
+            "format": "liquid",
+            "sections": [
+              "page-details-factory-template"
+            ]
+          },
+          {
+            "template": "page.details-factory2",
+            "file": "templates/page.details-factory2.liquid",
+            "variant": "details-factory2",
+            "format": "liquid",
+            "sections": [
+              "page-details-factory2-template"
+            ]
+          },
+          {
+            "template": "page.details-pro",
+            "file": "templates/page.details-pro.liquid",
+            "variant": "details-pro",
+            "format": "liquid",
+            "sections": [
+              "page-details-pro-template"
+            ]
+          },
+          {
+            "template": "page.details-techtalk",
+            "file": "templates/page.details-techtalk.liquid",
+            "variant": "details-techtalk",
+            "format": "liquid",
+            "sections": []
+          },
+          {
+            "template": "page.downlow",
+            "file": "templates/page.downlow.json",
+            "variant": "downlow",
+            "format": "json",
+            "sections": [
+              "featured-text",
+              "image-text",
+              "divider",
+              "page-gallery-template"
+            ]
+          },
+          {
+            "template": "page.faq",
+            "file": "templates/page.faq.json",
+            "variant": "faq",
+            "format": "json",
+            "sections": [
+              "page-faq-template"
+            ]
+          },
+          {
+            "template": "page.gallery",
+            "file": "templates/page.gallery.json",
+            "variant": "gallery",
+            "format": "json",
+            "sections": [
+              "image-with-text-overlay",
+              "featured-text",
+              "image-text",
+              "divider",
+              "image-with-text-overlay",
+              "featured-text",
+              "page-gallery-template",
+              "divider"
+            ]
+          },
+          {
+            "template": "page.landing-page-1",
+            "file": "templates/page.landing-page-1.json",
+            "variant": "landing-page-1",
+            "format": "json",
+            "sections": [
+              "custom-html",
+              "slideshow",
+              "page-template",
+              "collection-list",
+              "custom-html",
+              "image-text",
+              "featured-text",
+              "custom-html",
+              "featured-collection"
+            ]
+          },
+          {
+            "template": "page.level1",
+            "file": "templates/page.level1.json",
+            "variant": "level1",
+            "format": "json",
+            "sections": [
+              "page-gallery-template",
+              "featured-text",
+              "featured-collection",
+              "custom-html",
+              "video",
+              "featured-product",
+              "featured-product",
+              "featured-text"
+            ]
+          },
+          {
+            "template": "page.multi-column",
+            "file": "templates/page.multi-column.json",
+            "variant": "multi-column",
+            "format": "json",
+            "sections": [
+              "image-with-text-overlay",
+              "featured-text",
+              "text-columns-with-images",
+              "text-columns-with-images",
+              "custom-html",
+              "contact-form",
+              "map",
+              "page-multi-column-template",
+              "newsletter"
+            ]
+          },
+          {
+            "template": "page.narrow",
+            "file": "templates/page.narrow.json",
+            "variant": "narrow",
+            "format": "json",
+            "sections": [
+              "page-narrow-template",
+              "newsletter"
+            ]
+          },
+          {
+            "template": "page.no-title",
+            "file": "templates/page.no-title.json",
+            "variant": "no-title",
+            "format": "json",
+            "sections": [
+              "page-no-title-template",
+              "newsletter"
+            ]
+          },
+          {
+            "template": "page.pomoca",
+            "file": "templates/page.pomoca.liquid",
+            "variant": "pomoca",
+            "format": "liquid",
+            "sections": [
+              "page-details-pomoca-template"
+            ]
+          },
+          {
+            "template": "page.product-list",
+            "file": "templates/page.product-list.liquid",
+            "variant": "product-list",
+            "format": "liquid",
+            "sections": []
+          },
+          {
+            "template": "page.promo",
+            "file": "templates/page.promo.json",
+            "variant": "promo",
+            "format": "json",
+            "sections": [
+              "page-template",
+              "custom-html",
+              "video"
+            ]
+          },
+          {
+            "template": "page.quiz-page",
+            "file": "templates/page.quiz-page.json",
+            "variant": "quiz-page",
+            "format": "json",
+            "sections": [
+              "page-template",
+              "apps"
+            ]
+          },
+          {
+            "template": "page.sidebar",
+            "file": "templates/page.sidebar.json",
+            "variant": "sidebar",
+            "format": "json",
+            "sections": [
+              "page-sidebar-template",
+              "newsletter"
+            ]
+          },
+          {
+            "template": "page.team",
+            "file": "templates/page.team.json",
+            "variant": "team",
+            "format": "json",
+            "sections": [
+              "page-team-template"
+            ]
+          },
+          {
+            "template": "page.techtalk",
+            "file": "templates/page.techtalk.json",
+            "variant": "techtalk",
+            "format": "json",
+            "sections": [
+              "image-with-text-overlay",
+              "divider",
+              "featured-text",
+              "image-with-text-overlay",
+              "custom-html",
+              "video",
+              "featured-text",
+              "custom-html",
+              "video",
+              "page-gallery-template",
+              "featured-text",
+              "custom-html",
+              "video",
+              "divider"
+            ]
+          },
+          {
+            "template": "page.voyager13",
+            "file": "templates/page.voyager13.liquid",
+            "variant": "voyager13",
+            "format": "liquid",
+            "sections": []
+          },
+          {
+            "template": "page.withdrawal-form",
+            "file": "templates/page.withdrawal-form.json",
+            "variant": "withdrawal-form",
+            "format": "json",
+            "sections": [
+              "page-template",
+              "divider",
+              "apps",
+              "divider"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cart",
+        "label": "Cart",
+        "url": "/cart",
+        "order": 7,
+        "templateCount": 4,
+        "templates": [
+          {
+            "template": "cart",
+            "file": "templates/cart.json",
+            "variant": "default",
+            "format": "json",
+            "sections": [
+              "cart-template",
+              "featured-collection"
+            ]
+          },
+          {
+            "template": "cart.assets",
+            "file": "templates/cart.assets.liquid",
+            "variant": "assets",
+            "format": "liquid",
+            "sections": []
+          },
+          {
+            "template": "cart.settings",
+            "file": "templates/cart.settings.liquid",
+            "variant": "settings",
+            "format": "liquid",
+            "sections": []
+          },
+          {
+            "template": "cart.wpd_cart_data",
+            "file": "templates/cart.wpd_cart_data.liquid",
+            "variant": "wpd_cart_data",
+            "format": "liquid",
+            "sections": []
+          }
+        ]
+      },
+      {
+        "id": "search",
+        "label": "Search",
+        "url": "/search",
+        "order": 8,
+        "templateCount": 6,
+        "templates": [
+          {
+            "template": "search",
+            "file": "templates/search.json",
+            "variant": "default",
+            "format": "json",
+            "sections": [
+              "search-template"
+            ]
+          },
+          {
+            "template": "search.json",
+            "file": "templates/search.json.json",
+            "variant": "json",
+            "format": "json",
+            "sections": [
+              "search-json-template"
+            ]
+          },
+          {
+            "template": "search.wcp_cart",
+            "file": "templates/search.wcp_cart.liquid",
+            "variant": "wcp_cart",
+            "format": "liquid",
+            "sections": []
+          },
+          {
+            "template": "search.wcp_discount_api",
+            "file": "templates/search.wcp_discount_api.liquid",
+            "variant": "wcp_discount_api",
+            "format": "liquid",
+            "sections": []
+          },
+          {
+            "template": "search.wpd_cart_refresh",
+            "file": "templates/search.wpd_cart_refresh.liquid",
+            "variant": "wpd_cart_refresh",
+            "format": "liquid",
+            "sections": []
+          },
+          {
+            "template": "search.wpd_search_data",
+            "file": "templates/search.wpd_search_data.liquid",
+            "variant": "wpd_search_data",
+            "format": "liquid",
+            "sections": []
+          }
+        ]
+      },
+      {
+        "id": "gift_card",
+        "label": "Gift card",
+        "url": "/gift_cards/…",
+        "order": 10,
+        "templateCount": 1,
+        "templates": [
+          {
+            "template": "gift_card",
+            "file": "templates/gift_card.liquid",
+            "variant": "default",
+            "format": "liquid",
+            "sections": []
+          }
+        ]
+      },
+      {
+        "id": "password",
+        "label": "Password",
+        "url": "/password",
+        "order": 11,
+        "templateCount": 1,
+        "templates": [
+          {
+            "template": "password",
+            "file": "templates/password.json",
+            "variant": "default",
+            "format": "json",
+            "sections": [
+              "custom-html",
+              "password-template",
+              "video"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "404",
+        "label": "Not found (404)",
+        "url": "/404",
+        "order": 12,
+        "templateCount": 1,
+        "templates": [
+          {
+            "template": "404",
+            "file": "templates/404.json",
+            "variant": "default",
+            "format": "json",
+            "sections": [
+              "404-template",
+              "newsletter"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "wcp_discount_api",
+        "label": "Wcp_discount_api",
+        "url": "/wcp_discount_api",
+        "order": 50,
+        "templateCount": 1,
+        "templates": [
+          {
+            "template": "wcp_discount_api",
+            "file": "templates/wcp_discount_api.liquid",
+            "variant": "default",
+            "format": "liquid",
+            "sections": []
+          }
+        ]
+      }
+    ],
+    "global": {
+      "header": [
+        "header",
+        "mega-menu-3",
+        "mega-menu-4",
+        "mega-menu-5",
+        "mega-menu-1",
+        "mega-menu-2"
+      ],
+      "footer": [
+        "footer"
+      ],
+      "snippets": [
+        "price-ui-templates",
+        "js-variables",
+        "social-meta-info",
+        "age-gate",
+        "quick-shop",
+        "popup-newsletter",
+        "mobile-search",
+        "cart-shipping-scripts",
+        "bundle-preorder.js",
+        "bundle.js",
+        "tag-selector.js",
+        "wcp_cart"
+      ],
+      "assets": [
+        "jquery.min.js",
+        "fancybox.css",
+        "v-reanimator.js",
+        "v-reanimator.css",
+        "styles.css",
+        "styles-custom.css",
+        "favicon.png",
+        "currencies.js",
+        "themeEditorSections.js",
+        "vendors.js",
+        "utilities.js",
+        "sections.min.js",
+        "app.min.js",
+        "sections.js",
+        "app.js"
+      ],
+      "layoutFile": "layout/theme.liquid"
+    }
   },
   "features": [
     {
@@ -32,7 +1063,7 @@
         "listens": []
       },
       "summary": "A section “404 Template”. Renders 2 snippets. Reads 2 settings.",
-      "x": 401,
+      "x": 397,
       "y": 4,
       "anchor": "sections/404-template.liquid"
     },
@@ -51,7 +1082,7 @@
         "listens": []
       },
       "summary": "A section “App wrapper”.",
-      "x": 400,
+      "x": 397,
       "y": 35,
       "anchor": "sections/apps.liquid"
     },
@@ -136,8 +1167,8 @@
         "listens": []
       },
       "summary": "A section “Blog post”. Renders 15 snippets. Reads 34 settings.",
-      "x": 317,
-      "y": -23,
+      "x": 313,
+      "y": -21,
       "anchor": "sections/article-template.liquid"
     },
     {
@@ -182,7 +1213,7 @@
         "listens": []
       },
       "summary": "A section “Blog posts”. Renders 5 snippets. Reads 15 settings.",
-      "x": 393,
+      "x": 390,
       "y": 75,
       "anchor": "sections/blog-posts.liquid"
     },
@@ -228,8 +1259,8 @@
         "listens": []
       },
       "summary": "A section “Blog posts”. Renders 5 snippets. Reads 15 settings.",
-      "x": 386,
-      "y": 110,
+      "x": 382,
+      "y": 111,
       "anchor": "sections/featured-blog.liquid"
     },
     {
@@ -308,8 +1339,8 @@
         "listens": []
       },
       "summary": "A section “Blog”. Renders 14 snippets. Reads 31 settings.",
-      "x": 283,
-      "y": 133,
+      "x": 278,
+      "y": 135,
       "anchor": "sections/blog-template.liquid"
     },
     {
@@ -365,8 +1396,8 @@
         "listens": []
       },
       "summary": "A section “Cart page”. Renders 10 snippets. Reads 16 settings.",
-      "x": 272,
-      "y": 176,
+      "x": 278,
+      "y": 177,
       "anchor": "sections/cart-template.liquid"
     },
     {
@@ -405,8 +1436,8 @@
         "listens": []
       },
       "summary": "A section “Collection list”. Renders 3 snippets. Reads 13 settings.",
-      "x": 368,
-      "y": 169,
+      "x": 364,
+      "y": 172,
       "anchor": "sections/collection-list.liquid"
     },
     {
@@ -556,8 +1587,8 @@
         "listens": []
       },
       "summary": "A section “Collection”. Renders 38 snippets. Loads 3 assets. Reads 47 settings.",
-      "x": 350,
-      "y": 197,
+      "x": 345,
+      "y": 200,
       "anchor": "sections/collection-template.liquid"
     },
     {
@@ -708,8 +1739,8 @@
         "listens": []
       },
       "summary": "A section “Collection”. Renders 38 snippets. Loads 3 assets. Reads 48 settings.",
-      "x": 333,
-      "y": 224,
+      "x": 328,
+      "y": 226,
       "anchor": "sections/collection-template_variant-options.liquid"
     },
     {
@@ -784,8 +1815,8 @@
         "listens": []
       },
       "summary": "A section “Collections”. Renders 13 snippets. Reads 29 settings.",
-      "x": 314,
-      "y": 250,
+      "x": 307,
+      "y": 253,
       "anchor": "sections/list-collections-template.liquid"
     },
     {
@@ -858,8 +1889,8 @@
         "listens": []
       },
       "summary": "A section “Contact form”. Renders 4 snippets. Reads 45 settings.",
-      "x": 221,
-      "y": 180,
+      "x": 224,
+      "y": 181,
       "anchor": "sections/contact-form.liquid"
     },
     {
@@ -948,8 +1979,8 @@
         "listens": []
       },
       "summary": "A section “Contact”. Renders 10 snippets. Reads 49 settings.",
-      "x": 193,
-      "y": 240,
+      "x": 195,
+      "y": 241,
       "anchor": "sections/contact-custom-template.liquid"
     },
     {
@@ -1012,8 +2043,8 @@
         "listens": []
       },
       "summary": "A section “Contact”. Renders 10 snippets. Reads 23 settings.",
-      "x": 275,
-      "y": 292,
+      "x": 267,
+      "y": 295,
       "anchor": "sections/contact-template.liquid"
     },
     {
@@ -1038,8 +2069,8 @@
         "listens": []
       },
       "summary": "A section “Custom HTML”. Renders 1 snippet. Reads 3 settings.",
-      "x": 250,
-      "y": 313,
+      "x": 242,
+      "y": 315,
       "anchor": "sections/custom-html.liquid"
     },
     {
@@ -1064,8 +2095,8 @@
         "listens": []
       },
       "summary": "A section “Custom liquid”. Renders 1 snippet. Reads 3 settings.",
-      "x": 227,
-      "y": 330,
+      "x": 218,
+      "y": 331,
       "anchor": "sections/custom-liquid.liquid"
     },
     {
@@ -1086,8 +2117,8 @@
         "listens": []
       },
       "summary": "A section “Customer Reviews”. Renders 1 snippet.",
-      "x": 204,
-      "y": 344,
+      "x": 194,
+      "y": 345,
       "anchor": "sections/product-reviews.liquid"
     },
     {
@@ -1113,8 +2144,8 @@
         "listens": []
       },
       "summary": "A section “Divider”. Renders 1 snippet. Reads 4 settings.",
-      "x": 180,
-      "y": 357,
+      "x": 170,
+      "y": 358,
       "anchor": "sections/divider.liquid"
     },
     {
@@ -1141,8 +2172,8 @@
         "listens": []
       },
       "summary": "A section “FAQ”. Renders 1 snippet. Reads 5 settings.",
-      "x": 155,
-      "y": 368,
+      "x": 144,
+      "y": 369,
       "anchor": "sections/faq.liquid"
     },
     {
@@ -1167,7 +2198,7 @@
         "listens": []
       },
       "summary": "A section “Feature cards”. Reads 6 settings.",
-      "x": 128,
+      "x": 117,
       "y": 378,
       "anchor": "sections/moment-feature-cards.liquid"
     },
@@ -1291,8 +2322,8 @@
         "listens": []
       },
       "summary": "A section “Featured collection”. Renders 30 snippets. Loads 3 assets. Reads 36 settings.",
-      "x": 97,
-      "y": 387,
+      "x": 85,
+      "y": 386,
       "anchor": "sections/featured-collection.liquid"
     },
     {
@@ -1428,8 +2459,8 @@
         "listens": []
       },
       "summary": "A section “Featured product”. Renders 27 snippets. Loads 6 assets. Reads 49 settings.",
-      "x": 79,
-      "y": 21,
+      "x": 69,
+      "y": 22,
       "anchor": "sections/featured-product.liquid"
     },
     {
@@ -1528,8 +2559,8 @@
         "listens": []
       },
       "summary": "A section “Featured products”. Renders 20 snippets. Loads 4 assets. Reads 30 settings.",
-      "x": -19,
-      "y": 9,
+      "x": -30,
+      "y": 13,
       "anchor": "sections/featured-products.liquid"
     },
     {
@@ -1569,28 +2600,9 @@
         "listens": []
       },
       "summary": "A section “Featured promotions”. Renders 3 snippets. Reads 14 settings.",
-      "x": 40,
-      "y": 398,
+      "x": 23,
+      "y": 396,
       "anchor": "sections/featured-promotions.liquid"
-    },
-    {
-      "id": "footer-group.json",
-      "name": "Footer Group.Json",
-      "files": [
-        "sections/footer-group.json"
-      ],
-      "snippets": [],
-      "assets": [],
-      "settings": [],
-      "elements": [],
-      "events": {
-        "emits": [],
-        "listens": []
-      },
-      "summary": "A section “Footer Group.Json”.",
-      "x": 4,
-      "y": 401,
-      "anchor": "sections/footer-group.json"
     },
     {
       "id": "footer",
@@ -1661,8 +2673,8 @@
         "listens": []
       },
       "summary": "A section “Footer”. Renders 2 snippets. Reads 48 settings.",
-      "x": 9,
-      "y": 324,
+      "x": 10,
+      "y": 326,
       "anchor": "sections/footer.liquid"
     },
     {
@@ -1697,8 +2709,8 @@
         "listens": []
       },
       "summary": "A section “Gallery”. Renders 3 snippets. Reads 9 settings.",
-      "x": -38,
-      "y": 399,
+      "x": -26,
+      "y": 397,
       "anchor": "sections/downlow.liquid"
     },
     {
@@ -1733,28 +2745,9 @@
         "listens": []
       },
       "summary": "A section “Gallery”. Renders 3 snippets. Reads 9 settings.",
-      "x": -70,
-      "y": 394,
+      "x": -62,
+      "y": 392,
       "anchor": "sections/gallery.liquid"
-    },
-    {
-      "id": "header-group.json",
-      "name": "Header Group.Json",
-      "files": [
-        "sections/header-group.json"
-      ],
-      "snippets": [],
-      "assets": [],
-      "settings": [],
-      "elements": [],
-      "events": {
-        "emits": [],
-        "listens": []
-      },
-      "summary": "A section “Header Group.Json”.",
-      "x": -101,
-      "y": 387,
-      "anchor": "sections/header-group.json"
     },
     {
       "id": "header",
@@ -1878,8 +2871,8 @@
         "listens": []
       },
       "summary": "A section “Header”. Renders 15 snippets. Loads 4 assets. Reads 66 settings.",
-      "x": -21,
-      "y": 235,
+      "x": -11,
+      "y": 247,
       "anchor": "sections/header.liquid"
     },
     {
@@ -1934,8 +2927,8 @@
         "listens": []
       },
       "summary": "A section “Image with text overlay”. Renders 7 snippets. Reads 21 settings.",
-      "x": -136,
-      "y": 375,
+      "x": -100,
+      "y": 383,
       "anchor": "sections/image-with-text-overlay.liquid"
     },
     {
@@ -1979,8 +2972,8 @@
         "listens": []
       },
       "summary": "A section “Image with text”. Renders 5 snippets. Reads 14 settings.",
-      "x": -163,
-      "y": 363,
+      "x": -128,
+      "y": 373,
       "anchor": "sections/image-text.liquid"
     },
     {
@@ -2011,8 +3004,8 @@
         "listens": []
       },
       "summary": "A section “Logo list”. Renders 2 snippets. Reads 7 settings.",
-      "x": -188,
-      "y": 350,
+      "x": -154,
+      "y": 362,
       "anchor": "sections/logo-bar.liquid"
     },
     {
@@ -2050,8 +3043,8 @@
         "listens": []
       },
       "summary": "A section “Map”. Renders 3 snippets. Reads 12 settings.",
-      "x": -203,
-      "y": 323,
+      "x": -173,
+      "y": 337,
       "anchor": "sections/map.liquid"
     },
     {
@@ -2098,8 +3091,8 @@
         "listens": []
       },
       "summary": "A section “Mega menu 1”. Renders 2 snippets. Reads 23 settings.",
-      "x": -198,
-      "y": 392,
+      "x": -162,
+      "y": 405,
       "anchor": "sections/mega-menu-1.liquid"
     },
     {
@@ -2146,8 +3139,8 @@
         "listens": []
       },
       "summary": "A section “Mega menu 2”. Renders 2 snippets. Reads 23 settings.",
-      "x": -225,
-      "y": 336,
+      "x": -193,
+      "y": 352,
       "anchor": "sections/mega-menu-2.liquid"
     },
     {
@@ -2194,8 +3187,8 @@
         "listens": []
       },
       "summary": "A section “Mega menu 3”. Renders 2 snippets. Reads 23 settings.",
-      "x": -273,
-      "y": 287,
+      "x": -246,
+      "y": 306,
       "anchor": "sections/mega-menu-3.liquid"
     },
     {
@@ -2242,8 +3235,8 @@
         "listens": []
       },
       "summary": "A section “Mega menu 4”. Renders 2 snippets. Reads 23 settings.",
-      "x": -325,
-      "y": 241,
+      "x": -302,
+      "y": 264,
       "anchor": "sections/mega-menu-4.liquid"
     },
     {
@@ -2290,8 +3283,8 @@
         "listens": []
       },
       "summary": "A section “Mega menu 5”. Renders 2 snippets. Reads 23 settings.",
-      "x": -382,
-      "y": 218,
+      "x": -360,
+      "y": 245,
       "anchor": "sections/mega-menu-5.liquid"
     },
     {
@@ -2315,8 +3308,8 @@
         "listens": []
       },
       "summary": "A section “Newsletter band”. Reads 5 settings.",
-      "x": -311,
-      "y": 220,
+      "x": -291,
+      "y": 241,
       "anchor": "sections/moment-newsletter.liquid"
     },
     {
@@ -2345,8 +3338,8 @@
         "listens": []
       },
       "summary": "A section “Newsletter”. Reads 10 settings.",
-      "x": -339,
-      "y": 207,
+      "x": -319,
+      "y": 230,
       "anchor": "sections/newsletter.liquid"
     },
     {
@@ -2398,8 +3391,8 @@
         "listens": []
       },
       "summary": "A section “Page | banner”. Renders 8 snippets. Reads 16 settings.",
-      "x": -353,
-      "y": 184,
+      "x": -335,
+      "y": 209,
       "anchor": "sections/page-banner-template.liquid"
     },
     {
@@ -2629,8 +3622,8 @@
         "listens": []
       },
       "summary": "A section “Page | details”. Renders 45 snippets. Loads 3 assets. Reads 113 settings.",
-      "x": -365,
-      "y": 162,
+      "x": -348,
+      "y": 187,
       "anchor": "sections/page-demo-template.liquid"
     },
     {
@@ -2860,8 +3853,8 @@
         "listens": []
       },
       "summary": "A section “Page | details”. Renders 45 snippets. Loads 3 assets. Reads 113 settings.",
-      "x": -374,
-      "y": 139,
+      "x": -360,
+      "y": 164,
       "anchor": "sections/page-details-about-template.liquid"
     },
     {
@@ -3091,8 +4084,8 @@
         "listens": []
       },
       "summary": "A section “Page | details”. Renders 45 snippets. Loads 3 assets. Reads 113 settings.",
-      "x": -382,
-      "y": 114,
+      "x": -370,
+      "y": 140,
       "anchor": "sections/page-details-ak-template.liquid"
     },
     {
@@ -3322,8 +4315,8 @@
         "listens": []
       },
       "summary": "A section “Page | details”. Renders 45 snippets. Loads 3 assets. Reads 113 settings.",
-      "x": -389,
-      "y": 89,
+      "x": -378,
+      "y": 116,
       "anchor": "sections/page-details-bf-template.liquid"
     },
     {
@@ -3553,8 +4546,8 @@
         "listens": []
       },
       "summary": "A section “Page | details”. Renders 45 snippets. Loads 3 assets. Reads 113 settings.",
-      "x": -394,
-      "y": 64,
+      "x": -385,
+      "y": 91,
       "anchor": "sections/page-details-downlow-template.liquid"
     },
     {
@@ -3784,8 +4777,8 @@
         "listens": []
       },
       "summary": "A section “Page | details”. Renders 45 snippets. Loads 3 assets. Reads 113 settings.",
-      "x": -397,
-      "y": 39,
+      "x": -390,
+      "y": 65,
       "anchor": "sections/page-details-factory-template.liquid"
     },
     {
@@ -4015,8 +5008,8 @@
         "listens": []
       },
       "summary": "A section “Page | details”. Renders 45 snippets. Loads 3 assets. Reads 113 settings.",
-      "x": -399,
-      "y": 13,
+      "x": -394,
+      "y": 39,
       "anchor": "sections/page-details-factory2.liquid"
     },
     {
@@ -4246,8 +5239,8 @@
         "listens": []
       },
       "summary": "A section “Page | details”. Renders 45 snippets. Loads 3 assets. Reads 113 settings.",
-      "x": -399,
-      "y": -13,
+      "x": -395,
+      "y": 13,
       "anchor": "sections/page-details-factory2-template.liquid"
     },
     {
@@ -4477,8 +5470,8 @@
         "listens": []
       },
       "summary": "A section “Page | details”. Renders 45 snippets. Loads 3 assets. Reads 113 settings.",
-      "x": -397,
-      "y": -39,
+      "x": -395,
+      "y": -13,
       "anchor": "sections/page-details-pomoca-template.liquid"
     },
     {
@@ -4709,7 +5702,7 @@
       },
       "summary": "A section “Page | details”. Renders 45 snippets. Loads 3 assets. Reads 113 settings.",
       "x": -394,
-      "y": -64,
+      "y": -39,
       "anchor": "sections/page-details-pro-template.liquid"
     },
     {
@@ -4939,8 +5932,8 @@
         "listens": []
       },
       "summary": "A section “Page | details”. Renders 45 snippets. Loads 3 assets. Reads 113 settings.",
-      "x": -389,
-      "y": -90,
+      "x": -390,
+      "y": -65,
       "anchor": "sections/page-details-template.liquid"
     },
     {
@@ -5170,8 +6163,8 @@
         "listens": []
       },
       "summary": "A section “Page | details”. Renders 45 snippets. Loads 3 assets. Reads 113 settings.",
-      "x": -382,
-      "y": -115,
+      "x": -385,
+      "y": -91,
       "anchor": "sections/product-details-blister-template.liquid"
     },
     {
@@ -5226,8 +6219,8 @@
         "listens": []
       },
       "summary": "A section “Page | faq”. Renders 8 snippets. Reads 19 settings.",
-      "x": -374,
-      "y": -139,
+      "x": -378,
+      "y": -116,
       "anchor": "sections/page-faq-template.liquid"
     },
     {
@@ -5262,8 +6255,8 @@
         "listens": []
       },
       "summary": "A section “Page | gallery”. Renders 3 snippets. Reads 9 settings.",
-      "x": -364,
-      "y": -163,
+      "x": -370,
+      "y": -141,
       "anchor": "sections/page-gallery-template.liquid"
     },
     {
@@ -5305,8 +6298,8 @@
         "listens": []
       },
       "summary": "A section “Page | sidebar”. Renders 3 snippets. Reads 16 settings.",
-      "x": -353,
-      "y": -187,
+      "x": -360,
+      "y": -165,
       "anchor": "sections/page-sidebar-template.liquid"
     },
     {
@@ -5343,8 +6336,8 @@
         "listens": []
       },
       "summary": "A section “Page | team”. Renders 2 snippets. Reads 13 settings.",
-      "x": -340,
-      "y": -209,
+      "x": -348,
+      "y": -189,
       "anchor": "sections/page-team-template.liquid"
     },
     {
@@ -5365,8 +6358,8 @@
         "listens": []
       },
       "summary": "A section “Page Multi Column Template”. Renders 1 snippet.",
-      "x": -326,
-      "y": -231,
+      "x": -335,
+      "y": -212,
       "anchor": "sections/page-multi-column-template.liquid"
     },
     {
@@ -5384,8 +6377,8 @@
         "listens": []
       },
       "summary": "A section “Page Narrow Template”.",
-      "x": -310,
-      "y": -252,
+      "x": -320,
+      "y": -234,
       "anchor": "sections/page-narrow-template.liquid"
     },
     {
@@ -5406,8 +6399,8 @@
         "listens": []
       },
       "summary": "A section “Page No Title Template”. Renders 1 snippet.",
-      "x": -292,
-      "y": -272,
+      "x": -303,
+      "y": -255,
       "anchor": "sections/page-no-title-template.liquid"
     },
     {
@@ -5428,8 +6421,8 @@
         "listens": []
       },
       "summary": "A section “Page Template”. Renders 1 snippet.",
-      "x": -273,
-      "y": -291,
+      "x": -284,
+      "y": -275,
       "anchor": "sections/page-template.liquid"
     },
     {
@@ -5456,8 +6449,8 @@
         "listens": []
       },
       "summary": "A section “Page”. Renders 2 snippets. Reads 3 settings.",
-      "x": -250,
-      "y": -310,
+      "x": -262,
+      "y": -295,
       "anchor": "sections/content-page.liquid"
     },
     {
@@ -5527,8 +6520,8 @@
         "listens": []
       },
       "summary": "A section “Password page”. Renders 2 snippets. Loads 2 assets. Reads 41 settings.",
-      "x": 46,
-      "y": 31,
+      "x": 42,
+      "y": 36,
       "anchor": "sections/password-template.liquid"
     },
     {
@@ -5568,8 +6561,8 @@
         "listens": []
       },
       "summary": "A section “Predictive Search”. Renders 7 snippets. Reads 6 settings.",
-      "x": -204,
-      "y": -324,
+      "x": -217,
+      "y": -311,
       "anchor": "sections/predictive-search.liquid"
     },
     {
@@ -5706,8 +6699,8 @@
         "listens": []
       },
       "summary": "A section “Product | bottom”. Renders 25 snippets. Loads 4 assets. Reads 58 settings.",
-      "x": -168,
-      "y": -193,
+      "x": -181,
+      "y": -186,
       "anchor": "sections/product-description-bottom-template.liquid"
     },
     {
@@ -5991,8 +6984,8 @@
         "listens": []
       },
       "summary": "A section “Product | details”. Renders 55 snippets. Loads 8 assets. Reads 137 settings.",
-      "x": -226,
-      "y": -331,
+      "x": -238,
+      "y": -318,
       "anchor": "sections/product-bundle.liquid"
     },
     {
@@ -6272,8 +7265,8 @@
         "listens": []
       },
       "summary": "A section “Product | details”. Renders 53 snippets. Loads 8 assets. Reads 137 settings.",
-      "x": -198,
-      "y": -356,
+      "x": -211,
+      "y": -345,
       "anchor": "sections/product-details-moment-binding.liquid"
     },
     {
@@ -6553,8 +7546,8 @@
         "listens": []
       },
       "summary": "A section “Product | details”. Renders 53 snippets. Loads 8 assets. Reads 137 settings.",
-      "x": -158,
-      "y": -425,
+      "x": -174,
+      "y": -416,
       "anchor": "sections/product-details-template.liquid"
     },
     {
@@ -6822,8 +7815,8 @@
         "listens": []
       },
       "summary": "A section “Product | details”. Renders 51 snippets. Loads 4 assets. Reads 137 settings.",
-      "x": -94,
-      "y": -386,
+      "x": -107,
+      "y": -378,
       "anchor": "sections/product-details-template--ski.liquid"
     },
     {
@@ -7105,8 +8098,8 @@
         "listens": []
       },
       "summary": "A section “Product | details”. Renders 54 snippets. Loads 8 assets. Reads 137 settings.",
-      "x": -26,
-      "y": -481,
+      "x": -44,
+      "y": -477,
       "anchor": "sections/product-fancy_main.liquid"
     },
     {
@@ -7396,8 +8389,8 @@
         "listens": []
       },
       "summary": "A section “Product | details”. Renders 56 snippets. Loads 10 assets. Reads 137 settings.",
-      "x": 13,
-      "y": -254,
+      "x": 5,
+      "y": -253,
       "anchor": "sections/product-fancy_ski.liquid"
     },
     {
@@ -7535,8 +8528,8 @@
         "listens": []
       },
       "summary": "A section “Product | wide images”. Renders 25 snippets. Loads 4 assets. Reads 59 settings.",
-      "x": 31,
-      "y": -237,
+      "x": 17,
+      "y": -234,
       "anchor": "sections/product-full-width-images-template.liquid"
     },
     {
@@ -7568,8 +8561,8 @@
         "listens": []
       },
       "summary": "A section “Product Icons”. Renders 2 snippets. Loads 4 assets.",
-      "x": 53,
-      "y": -432,
+      "x": 38,
+      "y": -429,
       "anchor": "sections/product-icons-section.liquid"
     },
     {
@@ -7702,8 +8695,8 @@
         "listens": []
       },
       "summary": "A section “Product information”. Renders 27 snippets. Loads 6 assets. Reads 46 settings.",
-      "x": -51,
-      "y": -183,
+      "x": -64,
+      "y": -181,
       "anchor": "sections/product-template.liquid"
     },
     {
@@ -7728,8 +8721,8 @@
         "listens": []
       },
       "summary": "A section “Product lineup row”. Reads 6 settings.",
-      "x": 49,
-      "y": -388,
+      "x": 38,
+      "y": -386,
       "anchor": "sections/moment-category-row.liquid"
     },
     {
@@ -7826,8 +8819,8 @@
         "listens": []
       },
       "summary": "A section “Product Recently Viewed Template”. Renders 24 snippets. Loads 3 assets. Reads 22 settings.",
-      "x": 87,
-      "y": -389,
+      "x": 75,
+      "y": -387,
       "anchor": "sections/product-recently-viewed-template.liquid"
     },
     {
@@ -7957,8 +8950,8 @@
         "listens": []
       },
       "summary": "A section “Quick shop”. Renders 26 snippets. Loads 6 assets. Reads 45 settings.",
-      "x": 190,
-      "y": -180,
+      "x": 179,
+      "y": -179,
       "anchor": "sections/quickshop.liquid"
     },
     {
@@ -7991,7 +8984,7 @@
         "listens": []
       },
       "summary": "A section “Recently viewed products”. Renders 2 snippets. Reads 9 settings.",
-      "x": 124,
+      "x": 114,
       "y": -379,
       "anchor": "sections/recently-viewed.liquid"
     },
@@ -8012,7 +9005,7 @@
         "listens": []
       },
       "summary": "A section “Register”. Reads 1 setting.",
-      "x": 153,
+      "x": 143,
       "y": -369,
       "anchor": "sections/registration-form.liquid"
     },
@@ -8131,8 +9124,8 @@
         "listens": []
       },
       "summary": "A section “Related products”. Renders 29 snippets. Loads 3 assets. Reads 33 settings.",
-      "x": 178,
-      "y": -357,
+      "x": 169,
+      "y": -358,
       "anchor": "sections/product-recommendations.liquid"
     },
     {
@@ -8167,8 +9160,8 @@
         "listens": []
       },
       "summary": "A section “Rich text and image”. Renders 2 snippets. Reads 11 settings.",
-      "x": 202,
-      "y": -345,
+      "x": 193,
+      "y": -346,
       "anchor": "sections/featured-text.liquid"
     },
     {
@@ -8193,8 +9186,8 @@
         "listens": []
       },
       "summary": "A section “Search Json Template”. Renders 3 snippets.",
-      "x": 224,
-      "y": -330,
+      "x": 216,
+      "y": -332,
       "anchor": "sections/search-json-template.liquid"
     },
     {
@@ -8230,8 +9223,8 @@
         "listens": []
       },
       "summary": "A section “Search”. Renders 3 snippets. Reads 10 settings.",
-      "x": 246,
-      "y": -315,
+      "x": 238,
+      "y": -317,
       "anchor": "sections/search.liquid"
     },
     {
@@ -8263,8 +9256,8 @@
         "listens": []
       },
       "summary": "A section “Search”. Renders 3 snippets. Reads 6 settings.",
-      "x": 266,
-      "y": -298,
+      "x": 258,
+      "y": -300,
       "anchor": "sections/search-section.liquid"
     },
     {
@@ -8420,8 +9413,8 @@
         "listens": []
       },
       "summary": "A section “Search”. Renders 39 snippets. Loads 3 assets. Reads 51 settings.",
-      "x": 285,
-      "y": -280,
+      "x": 277,
+      "y": -283,
       "anchor": "sections/search-template.liquid"
     },
     {
@@ -8504,8 +9497,8 @@
         "listens": []
       },
       "summary": "A section “Shoppable image”. Renders 10 snippets. Reads 43 settings.",
-      "x": 302,
-      "y": -261,
+      "x": 296,
+      "y": -263,
       "anchor": "sections/shoppable-image.liquid"
     },
     {
@@ -8547,8 +9540,8 @@
         "listens": []
       },
       "summary": "A section “Sidebar”. Renders 3 snippets. Reads 16 settings.",
-      "x": 319,
-      "y": -241,
+      "x": 312,
+      "y": -243,
       "anchor": "sections/product-sidebar.liquid"
     },
     {
@@ -8609,8 +9602,8 @@
         "listens": []
       },
       "summary": "A section “Slideshow”. Renders 7 snippets. Reads 27 settings.",
-      "x": 333,
-      "y": -220,
+      "x": 328,
+      "y": -222,
       "anchor": "sections/slideshow.liquid"
     },
     {
@@ -8765,8 +9758,8 @@
         "listens": []
       },
       "summary": "A section “Sub-collection”. Renders 39 snippets. Loads 3 assets. Reads 50 settings.",
-      "x": 347,
-      "y": -198,
+      "x": 342,
+      "y": -200,
       "anchor": "sections/collection-sub-collections-template.liquid"
     },
     {
@@ -8784,8 +9777,8 @@
         "listens": []
       },
       "summary": "A section “Surface pick up”.",
-      "x": 359,
-      "y": -175,
+      "x": 354,
+      "y": -177,
       "anchor": "sections/surface-pick-up.liquid"
     },
     {
@@ -8806,8 +9799,8 @@
         "listens": []
       },
       "summary": "A section “t:sections.age_gate.name”. Reads 2 settings.",
-      "x": 370,
-      "y": -151,
+      "x": 365,
+      "y": -153,
       "anchor": "sections/age-gate.liquid"
     },
     {
@@ -8834,8 +9827,8 @@
         "listens": []
       },
       "summary": "A section “Tabs”. Renders 1 snippet. Reads 5 settings.",
-      "x": 379,
-      "y": -127,
+      "x": 375,
+      "y": -129,
       "anchor": "sections/tabs.liquid"
     },
     {
@@ -8855,8 +9848,8 @@
         "listens": []
       },
       "summary": "A section “Template Settings”. Reads 1 setting.",
-      "x": 386,
-      "y": -102,
+      "x": 382,
+      "y": -103,
       "anchor": "sections/template-settings.liquid"
     },
     {
@@ -8900,8 +9893,8 @@
         "listens": []
       },
       "summary": "A section “Testimonials”. Renders 2 snippets. Reads 20 settings.",
-      "x": 392,
-      "y": -77,
+      "x": 389,
+      "y": -78,
       "anchor": "sections/testimonial.liquid"
     },
     {
@@ -8939,7 +9932,7 @@
         "listens": []
       },
       "summary": "A section “Text columns with images”. Renders 3 snippets. Reads 12 settings.",
-      "x": 397,
+      "x": 393,
       "y": -51,
       "anchor": "sections/text-columns-with-images.liquid"
     },
@@ -9003,7 +9996,7 @@
         "listens": []
       },
       "summary": "A section “Video”. Renders 7 snippets. Reads 29 settings.",
-      "x": 400,
+      "x": 396,
       "y": -24,
       "anchor": "sections/video.liquid"
     }
@@ -9115,7 +10108,7 @@
     },
     {
       "path": "sections/footer-group.json",
-      "type": "section"
+      "type": "section-group"
     },
     {
       "path": "sections/footer.liquid",
@@ -9127,7 +10120,7 @@
     },
     {
       "path": "sections/header-group.json",
-      "type": "section"
+      "type": "section-group"
     },
     {
       "path": "sections/header.liquid",
@@ -16220,6 +17213,36 @@
       "detail": "with:variant"
     },
     {
+      "from": "templates/404.json",
+      "to": "sections/404-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/404.json",
+      "to": "sections/newsletter.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/article.json",
+      "to": "sections/article-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/article.json",
+      "to": "sections/newsletter.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/blog.json",
+      "to": "sections/blog-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
       "from": "templates/cart.assets.liquid",
       "to": "assets/favicon.png",
       "type": "scripts",
@@ -16230,6 +17253,18 @@
       "to": "assets/password-page-background.jpg",
       "type": "scripts",
       "detail": "password-page-background.jpg"
+    },
+    {
+      "from": "templates/cart.json",
+      "to": "sections/cart-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/cart.json",
+      "to": "sections/featured-collection.liquid",
+      "type": "composes",
+      "detail": ""
     },
     {
       "from": "templates/cart.wpd_cart_data.liquid",
@@ -16248,6 +17283,30 @@
       "to": "snippets/wcp_vd_discount.liquid",
       "type": "renders",
       "detail": "with:item"
+    },
+    {
+      "from": "templates/collection.23-collection.json",
+      "to": "sections/collection-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/collection.23-collection.json",
+      "to": "sections/newsletter.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/collection.apparel.json",
+      "to": "sections/collection-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/collection.bindings.json",
+      "to": "sections/collection-template.liquid",
+      "type": "composes",
+      "detail": ""
     },
     {
       "from": "templates/collection.fb-product-feed.liquid",
@@ -16334,6 +17393,30 @@
       "detail": "with:wcp_prd_var"
     },
     {
+      "from": "templates/collection.gear.json",
+      "to": "sections/collection-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/collection.json",
+      "to": "sections/collection-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/collection.sub-collections.json",
+      "to": "sections/collection-sub-collections-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/collection.sub-collections.json",
+      "to": "sections/newsletter.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
       "from": "templates/collection.wpd_collection_data.liquid",
       "to": "snippets/wcp_discount.liquid",
       "type": "renders",
@@ -16376,15 +17459,417 @@
       "detail": "gift-card.css"
     },
     {
+      "from": "templates/index.json",
+      "to": "sections/slideshow.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/index.json",
+      "to": "sections/image-with-text-overlay.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/index.json",
+      "to": "sections/featured-promotions.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/index.json",
+      "to": "sections/image-with-text-overlay.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/index.json",
+      "to": "sections/slideshow.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/index.json",
+      "to": "sections/image-with-text-overlay.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/index.json",
+      "to": "sections/featured-promotions.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/index.json",
+      "to": "sections/moment-category-row.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/index.json",
+      "to": "sections/moment-newsletter.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/index.json",
+      "to": "sections/moment-feature-cards.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/list-collections.json",
+      "to": "sections/list-collections-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/list-collections.json",
+      "to": "sections/newsletter.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.about.json",
+      "to": "sections/image-with-text-overlay.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.about.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.about.json",
+      "to": "sections/image-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.about.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.about.json",
+      "to": "sections/image-with-text-overlay.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.about.json",
+      "to": "sections/page-gallery-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.abyss.json",
+      "to": "sections/video.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.abyss.json",
+      "to": "sections/image-with-text-overlay.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.abyss.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.abyss.json",
+      "to": "sections/image-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.abyss.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.abyss.json",
+      "to": "sections/image-with-text-overlay.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.abyss.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.abyss.json",
+      "to": "sections/page-gallery-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.banner.json",
+      "to": "sections/page-banner-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.banner.json",
+      "to": "sections/newsletter.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
       "from": "templates/page.binding-list.liquid",
       "to": "snippets/ski-loop-item.liquid",
       "type": "renders",
       "detail": ""
     },
     {
+      "from": "templates/page.blackfriday.json",
+      "to": "sections/image-with-text-overlay.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.blackfriday.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.blackfriday.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.blackfriday.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.blackfriday.json",
+      "to": "sections/text-columns-with-images.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.blackfriday.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.blackfriday.json",
+      "to": "sections/text-columns-with-images.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.blackfriday.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.blackfriday.json",
+      "to": "sections/contact-form.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.blackfriday.json",
+      "to": "sections/map.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.blackfriday.json",
+      "to": "sections/page-multi-column-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.blackfriday.json",
+      "to": "sections/newsletter.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.bootfit.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.bootfit.json",
+      "to": "sections/logo-bar.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.bootfit.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.bootfit.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.bootfit.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.bootfit.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.bootfit.json",
+      "to": "sections/text-columns-with-images.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.bootfit.json",
+      "to": "sections/faq.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.bootfit.json",
+      "to": "sections/page-gallery-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.contact-custom.json",
+      "to": "sections/contact-custom-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.contact-custom.json",
+      "to": "sections/newsletter.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.contact.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.contact.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.contact.json",
+      "to": "sections/contact-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.contact.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.contact.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.contact.json",
+      "to": "sections/map.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.contact.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
       "from": "templates/page.demo.liquid",
       "to": "sections/page-demo-template.liquid",
       "type": "renders-section",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.demoseason.json",
+      "to": "sections/image-with-text-overlay.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.demoseason.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.demoseason.json",
+      "to": "sections/featured-product.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.demoseason.json",
+      "to": "sections/text-columns-with-images.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.demoseason.json",
+      "to": "sections/contact-form.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.demoseason.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.demoseason.json",
+      "to": "sections/map.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.demoseason.json",
+      "to": "sections/page-multi-column-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.demoseason.json",
+      "to": "sections/newsletter.liquid",
+      "type": "composes",
       "detail": ""
     },
     {
@@ -16442,6 +17927,276 @@
       "detail": ""
     },
     {
+      "from": "templates/page.downlow.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.downlow.json",
+      "to": "sections/image-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.downlow.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.downlow.json",
+      "to": "sections/page-gallery-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.faq.json",
+      "to": "sections/page-faq-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.gallery.json",
+      "to": "sections/image-with-text-overlay.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.gallery.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.gallery.json",
+      "to": "sections/image-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.gallery.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.gallery.json",
+      "to": "sections/image-with-text-overlay.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.gallery.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.gallery.json",
+      "to": "sections/page-gallery-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.gallery.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.json",
+      "to": "sections/page-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.landing-page-1.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.landing-page-1.json",
+      "to": "sections/slideshow.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.landing-page-1.json",
+      "to": "sections/page-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.landing-page-1.json",
+      "to": "sections/collection-list.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.landing-page-1.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.landing-page-1.json",
+      "to": "sections/image-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.landing-page-1.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.landing-page-1.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.landing-page-1.json",
+      "to": "sections/featured-collection.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.level1.json",
+      "to": "sections/page-gallery-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.level1.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.level1.json",
+      "to": "sections/featured-collection.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.level1.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.level1.json",
+      "to": "sections/video.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.level1.json",
+      "to": "sections/featured-product.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.level1.json",
+      "to": "sections/featured-product.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.level1.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.multi-column.json",
+      "to": "sections/image-with-text-overlay.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.multi-column.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.multi-column.json",
+      "to": "sections/text-columns-with-images.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.multi-column.json",
+      "to": "sections/text-columns-with-images.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.multi-column.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.multi-column.json",
+      "to": "sections/contact-form.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.multi-column.json",
+      "to": "sections/map.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.multi-column.json",
+      "to": "sections/page-multi-column-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.multi-column.json",
+      "to": "sections/newsletter.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.narrow.json",
+      "to": "sections/page-narrow-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.narrow.json",
+      "to": "sections/newsletter.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.no-title.json",
+      "to": "sections/page-no-title-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.no-title.json",
+      "to": "sections/newsletter.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
       "from": "templates/page.pomoca.liquid",
       "to": "sections/page-details-pomoca-template.liquid",
       "type": "renders-section",
@@ -16496,6 +18251,258 @@
       "detail": ""
     },
     {
+      "from": "templates/page.promo.json",
+      "to": "sections/page-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.promo.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.promo.json",
+      "to": "sections/video.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.quiz-page.json",
+      "to": "sections/page-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.quiz-page.json",
+      "to": "sections/apps.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.sidebar.json",
+      "to": "sections/page-sidebar-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.sidebar.json",
+      "to": "sections/newsletter.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.team.json",
+      "to": "sections/page-team-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.techtalk.json",
+      "to": "sections/image-with-text-overlay.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.techtalk.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.techtalk.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.techtalk.json",
+      "to": "sections/image-with-text-overlay.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.techtalk.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.techtalk.json",
+      "to": "sections/video.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.techtalk.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.techtalk.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.techtalk.json",
+      "to": "sections/video.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.techtalk.json",
+      "to": "sections/page-gallery-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.techtalk.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.techtalk.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.techtalk.json",
+      "to": "sections/video.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.techtalk.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.withdrawal-form.json",
+      "to": "sections/page-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.withdrawal-form.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.withdrawal-form.json",
+      "to": "sections/apps.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/page.withdrawal-form.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/password.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/password.json",
+      "to": "sections/password-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/password.json",
+      "to": "sections/video.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.alternating-text-and-images.json",
+      "to": "sections/product-sidebar.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.alternating-text-and-images.json",
+      "to": "sections/product-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.alternating-text-and-images.json",
+      "to": "sections/tabs.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.alternating-text-and-images.json",
+      "to": "sections/image-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.alternating-text-and-images.json",
+      "to": "sections/apps.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.alternating-text-and-images.json",
+      "to": "sections/product-recommendations.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.call-to-order.json",
+      "to": "sections/product-sidebar.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.call-to-order.json",
+      "to": "sections/product-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.call-to-order.json",
+      "to": "sections/product-icons-section.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.call-to-order.json",
+      "to": "sections/tabs.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.call-to-order.json",
+      "to": "sections/image-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.call-to-order.json",
+      "to": "sections/apps.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.call-to-order.json",
+      "to": "sections/product-recommendations.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
       "from": "templates/product.description-bottom.liquid",
       "to": "snippets/product__structured-data.liquid",
       "type": "renders",
@@ -16529,6 +18536,390 @@
       "from": "templates/product.full-width-images.liquid",
       "to": "sections/product-recommendations.liquid",
       "type": "renders-section",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.json",
+      "to": "sections/product-sidebar.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.json",
+      "to": "sections/product-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.json",
+      "to": "sections/product-icons-section.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.json",
+      "to": "sections/tabs.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.json",
+      "to": "sections/image-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.json",
+      "to": "sections/apps.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.json",
+      "to": "sections/product-recommendations.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.quickshop.json",
+      "to": "sections/quickshop.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.rv.json",
+      "to": "sections/product-recently-viewed-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.rv.json",
+      "to": "sections/product-recommendations.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.ski.json",
+      "to": "sections/product-sidebar.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.ski.json",
+      "to": "sections/product-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.ski.json",
+      "to": "sections/product-icons-section.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.ski.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.ski.json",
+      "to": "sections/tabs.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.ski.json",
+      "to": "sections/image-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.ski.json",
+      "to": "sections/product-recommendations.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.ski.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.ski.json",
+      "to": "sections/faq.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.ski.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.ski.json",
+      "to": "sections/image-with-text-overlay.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.ski.json",
+      "to": "sections/divider.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.ski.json",
+      "to": "sections/featured-collection.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.ski.json",
+      "to": "sections/text-columns-with-images.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.ski.json",
+      "to": "sections/apps.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager12.json",
+      "to": "sections/template-settings.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager12.json",
+      "to": "sections/video.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager12.json",
+      "to": "sections/product-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager12.json",
+      "to": "sections/tabs.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager12.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager12.json",
+      "to": "sections/image-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager12.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager12.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager12.json",
+      "to": "sections/product-reviews.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager13.json",
+      "to": "sections/template-settings.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager13.json",
+      "to": "sections/video.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager13.json",
+      "to": "sections/product-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager13.json",
+      "to": "sections/product-icons-section.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager13.json",
+      "to": "sections/tabs.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager13.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager13.json",
+      "to": "sections/image-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager13.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager13.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager13.json",
+      "to": "sections/product-reviews.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager13.json",
+      "to": "sections/apps.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager14.json",
+      "to": "sections/template-settings.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager14.json",
+      "to": "sections/video.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager14.json",
+      "to": "sections/product-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager14.json",
+      "to": "sections/tabs.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager14.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager14.json",
+      "to": "sections/image-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager14.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager14.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager14.json",
+      "to": "sections/product-reviews.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager15.json",
+      "to": "sections/template-settings.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager15.json",
+      "to": "sections/video.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager15.json",
+      "to": "sections/product-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager15.json",
+      "to": "sections/product-icons-section.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager15.json",
+      "to": "sections/tabs.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager15.json",
+      "to": "sections/featured-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager15.json",
+      "to": "sections/image-text.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager15.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager15.json",
+      "to": "sections/custom-html.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/product.voyager15.json",
+      "to": "sections/apps.liquid",
+      "type": "composes",
       "detail": ""
     },
     {
@@ -16572,6 +18963,18 @@
       "to": "snippets/wcp_variant.liquid",
       "type": "renders",
       "detail": "with:variant"
+    },
+    {
+      "from": "templates/search.json",
+      "to": "sections/search-template.liquid",
+      "type": "composes",
+      "detail": ""
+    },
+    {
+      "from": "templates/search.json.json",
+      "to": "sections/search-json-template.liquid",
+      "type": "composes",
+      "detail": ""
     },
     {
       "from": "templates/search.wcp_cart.liquid",

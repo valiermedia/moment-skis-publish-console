@@ -15,7 +15,7 @@ const DIRS = ["sections", "blocks", "snippets", "templates", "layout", "assets",
 
 function fileType(rel) {
   const ext = path.extname(rel).toLowerCase();
-  if (rel.startsWith("sections/")) return "section";
+  if (rel.startsWith("sections/")) return ext === ".json" ? "section-group" : "section";
   if (rel.startsWith("blocks/")) return "block";
   if (rel.startsWith("snippets/")) return "snippet";
   if (rel.startsWith("layout/")) return "layout";
@@ -67,6 +67,33 @@ const STD_EVENTS = new Set([
 function unique(arr) {
   return [...new Set(arr)];
 }
+
+// Shopify template/section-group JSON files may start with /* ... */ comment blocks,
+// which are invalid JSON. Strip block comments before parsing.
+function loadJsonLoose(text) {
+  try {
+    return JSON.parse(text.replace(/\/\*[\s\S]*?\*\//g, ""));
+  } catch {
+    return null;
+  }
+}
+
+// URL/label metadata for the site-shaped Level-1 navigation.
+const PAGE_TYPES = {
+  index: { label: "Home", url: "/", order: 0 },
+  product: { label: "Product", url: "/products/…", order: 1 },
+  collection: { label: "Collection", url: "/collections/…", order: 2 },
+  "list-collections": { label: "All collections", url: "/collections", order: 3 },
+  blog: { label: "Blog", url: "/blogs/…", order: 4 },
+  article: { label: "Article", url: "/blogs/…/…", order: 5 },
+  page: { label: "Page", url: "/pages/…", order: 6 },
+  cart: { label: "Cart", url: "/cart", order: 7 },
+  search: { label: "Search", url: "/search", order: 8 },
+  customers: { label: "Account", url: "/account", order: 9 },
+  gift_card: { label: "Gift card", url: "/gift_cards/…", order: 10 },
+  password: { label: "Password", url: "/password", order: 11 },
+  404: { label: "Not found (404)", url: "/404", order: 12 },
+};
 
 // ---- Liquid parsing ---------------------------------------------------------
 
@@ -209,19 +236,29 @@ export function analyzeTheme(themeDir, { branch, themeId } = {}) {
     ) {
       parsed[rel] = { kind: "liquid", ...parseLiquid(content) };
     } else if (type === "template") {
-      // JSON template: which sections it composes
+      // JSON template: which sections it composes, in order (comment-tolerant)
       const composes = [];
-      try {
-        const j = JSON.parse(content);
+      const j = loadJsonLoose(content);
+      if (j) {
         const order = j.order || Object.keys(j.sections || {});
         for (const key of order) {
           const sec = j.sections?.[key];
           if (sec?.type) composes.push(sec.type);
         }
-      } catch {
-        /* ignore */
       }
-      parsed[rel] = { kind: "template", composes: unique(composes) };
+      parsed[rel] = { kind: "template", composes };
+    } else if (type === "section-group") {
+      // header-group.json / footer-group.json — the sections in a region
+      const composes = [];
+      const j = loadJsonLoose(content);
+      if (j) {
+        const order = j.order || Object.keys(j.sections || {});
+        for (const key of order) {
+          const sec = j.sections?.[key];
+          if (sec?.type) composes.push(sec.type);
+        }
+      }
+      parsed[rel] = { kind: "section-group", composes };
     } else {
       parsed[rel] = { kind: type };
     }
@@ -401,6 +438,8 @@ export function analyzeTheme(themeDir, { branch, themeId } = {}) {
 
   layoutFeatures(features, featureEdges);
 
+  const sitemap = buildSitemap(relFiles, parsed, fileSet);
+
   return {
     branch: branch || null,
     themeId: themeId || null,
@@ -410,7 +449,9 @@ export function analyzeTheme(themeDir, { branch, themeId } = {}) {
       features: features.length,
       edges: edges.length,
       featureEdges: featureEdges.length,
+      pageTypes: sitemap.pageTypes.length,
     },
+    sitemap,
     features: features.map(({ anchor, ...rest }) => ({ ...rest, anchor })),
     files,
     edges,
@@ -468,6 +509,66 @@ function layoutFeatures(features, featureEdges) {
     f.x = Math.round(f.x);
     f.y = Math.round(f.y);
   }
+}
+
+// Build the site-shaped navigation: page types (from templates/) → their templates
+// → composed sections, plus the global header/footer regions (from section groups).
+function buildSitemap(relFiles, parsed, fileSet) {
+  const composedSections = (rel) => {
+    const p = parsed[rel];
+    if (p?.kind === "template") return p.composes;
+    if (p?.kind === "liquid") {
+      // .liquid template: {% section 'x' %} / renders that resolve to a section file
+      return unique((p.renders || []).filter((r) => fileSet.has(`sections/${r.name}.liquid`)).map((r) => r.name));
+    }
+    return [];
+  };
+
+  const byType = {};
+  for (const rel of relFiles) {
+    if (!rel.startsWith("templates/")) continue;
+    const base = path.basename(rel).replace(/\.(json|liquid)$/i, "");
+    const dot = base.indexOf(".");
+    const pageType = dot === -1 ? base : base.slice(0, dot);
+    const variant = dot === -1 ? "default" : base.slice(dot + 1);
+    (byType[pageType] ||= []).push({
+      template: base,
+      file: rel,
+      variant,
+      format: rel.toLowerCase().endsWith(".json") ? "json" : "liquid",
+      sections: composedSections(rel),
+    });
+  }
+
+  const pageTypes = Object.entries(byType)
+    .map(([id, templates]) => {
+      const meta = PAGE_TYPES[id] || { label: id.charAt(0).toUpperCase() + id.slice(1), url: `/${id}`, order: 50 };
+      templates.sort((a, b) =>
+        a.variant === "default" ? -1 : b.variant === "default" ? 1 : a.variant.localeCompare(b.variant)
+      );
+      return { id, label: meta.label, url: meta.url, order: meta.order, templateCount: templates.length, templates };
+    })
+    .sort((a, b) => a.order - b.order || a.id.localeCompare(b.id));
+
+  const header = parsed["sections/header-group.json"]?.composes || [];
+  const footer = parsed["sections/footer-group.json"]?.composes || [];
+  const layoutFile = fileSet.has("layout/theme.liquid")
+    ? "layout/theme.liquid"
+    : relFiles.find((r) => r.startsWith("layout/") && r.endsWith(".liquid")) || null;
+  const lp = layoutFile ? parsed[layoutFile] : null;
+  const globalSnippets = lp ? unique((lp.renders || []).filter((r) => fileSet.has(`snippets/${r.name}.liquid`)).map((r) => r.name)) : [];
+  const globalAssets = lp ? lp.assets || [] : [];
+
+  return {
+    pageTypes,
+    global: {
+      header: unique(header),
+      footer: unique(footer),
+      snippets: globalSnippets,
+      assets: globalAssets,
+      layoutFile,
+    },
+  };
 }
 
 function summarize(feat, anchorType) {
