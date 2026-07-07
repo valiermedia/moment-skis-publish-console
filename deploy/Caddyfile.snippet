@@ -1,4 +1,5 @@
 # Add this block to /etc/caddy/Caddyfile on the droplet (Caddy is the reverse
+# (Access logs go to journald: sudo journalctl -u caddy | grep moment-skis)
 # proxy on this infra — it handles HTTPS via Let's Encrypt automatically).
 # Replace the domain with the one the operator chose (see README).
 # Reload after editing:  sudo systemctl reload caddy
@@ -12,10 +13,5 @@ moment-skis.valier.dev {
         X-Frame-Options "DENY"
         Referrer-Policy "strict-origin-when-cross-origin"
     }
-    log {
-        output file /var/log/caddy/moment-skis-publish-console.log {
-            roll_size 10mb
-            roll_keep 5
-        }
     }
 }

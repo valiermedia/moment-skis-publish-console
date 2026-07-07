@@ -39,4 +39,4 @@ pm2 save
 ls -1dt "${BASE}/releases/"*/ | tail -n +4 | xargs -r rm -rf
 
 echo "Deployed ${APP} @ ${TS} (branch ${BRANCH})."
-echo "Health: curl -s http://127.0.0.1:3006/api/health"
+echo "Health: curl -s http://127.0.0.1:3008/api/health"
