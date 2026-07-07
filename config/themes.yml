@@ -1,0 +1,25 @@
+# -----------------------------------------------------------------------------
+# Branch → Shopify theme map. The SINGLE place the operator designates which
+# theme is "live", which is "staging", and each person's theme.
+#
+# These ids are used ONLY for READS (preview URLs, live-version display) and to
+# label the UI. A wrong id produces a wrong readout, never a wrong publish —
+# because there is no publish. The GitHub↔Shopify integration (not this app) is
+# what maps branch → theme for actual deploys.
+#
+# `people` lists the standing person-branches. Any branch ahead of `staging`
+# that isn't `live`/`staging` is treated as an update the same way (ad-hoc
+# feature branches included); listing a person here just gives a nicer label +
+# avatar colour and the theme id for preview.
+# -----------------------------------------------------------------------------
+branches:
+  live:    { theme_id: 162043560193 }   # Generally, this will be the already-published theme; used only to READ live version or the new WIP theme that we are initially building. once it goes live it stays live and is only READ.
+  staging: { theme_id: 162043855105 }
+  merritt: { theme_id: 162044772609 }
+  luke:    { theme_id: 162044641537 }
+  max:     { theme_id: 162044674305 }
+
+people:
+  merritt: { name: "Merritt", color: "#0C7C92" }
+  luke:    { name: "Luke",    color: "#B2603A" }
+  max:     { name: "Max",     color: "#6A5AA6" }
