@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAuthorized, nowISO } from "@/lib/guard";
+import { requireAuthorized, nowISO, authorFor } from "@/lib/guard";
 import { parsePicks } from "@/lib/picks";
 import { config } from "@/lib/config";
 import { mergeAndPush } from "@/lib/git";
@@ -34,7 +34,8 @@ export async function POST(req: Request) {
       config.stagingBranch,
       branch,
       picks,
-      `Sync "${branch}" from staging (via Publish Console, by ${login})`
+      `Sync "${branch}" from staging (via Publish Console, by ${login})`,
+      authorFor(login)
     );
     recordAudit({
       userLogin: login,

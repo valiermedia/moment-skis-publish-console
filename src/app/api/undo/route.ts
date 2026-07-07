@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAuthorized, nowISO } from "@/lib/guard";
+import { requireAuthorized, nowISO, authorFor } from "@/lib/guard";
 import { config } from "@/lib/config";
 import { revertOnBranch } from "@/lib/git";
 import { recordAudit } from "@/lib/db";
@@ -20,7 +20,8 @@ export async function POST() {
     const res = await revertOnBranch(
       config.liveBranch,
       { mode: "undo-last" },
-      `Undo last publish (via Publish Console, by ${login})`
+      `Undo last publish (via Publish Console, by ${login})`,
+      authorFor(login)
     );
     recordAudit({
       userLogin: login,

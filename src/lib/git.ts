@@ -290,6 +290,18 @@ export interface MergeResult {
   alreadyUpToDate: boolean;
 }
 
+/** Git commit author. We attribute merge/revert commits to the acting user. */
+export interface Author {
+  name: string;
+  email: string;
+}
+
+/** Set the commit identity for a worktree (the machine has no global git identity). */
+async function setAuthor(wt: SimpleGit, author: Author): Promise<void> {
+  await wt.raw(["config", "user.name", author.name || "Publish Console"]);
+  await wt.raw(["config", "user.email", author.email || "publish-console@moment-skis"]);
+}
+
 /**
  * Merge `source` into `target` and push `target`. If the merge conflicts,
  * `picks` (file → "ours" | "theirs") resolves each conflicted file whole. Any
@@ -301,7 +313,8 @@ export async function mergeAndPush(
   source: string,
   target: string,
   picks: Record<string, "ours" | "theirs">,
-  message: string
+  message: string,
+  author: Author
 ): Promise<MergeResult> {
   return withLock(async () => {
     const g = await ensureRepo(true);
@@ -309,6 +322,7 @@ export async function mergeAndPush(
     // Work on an actual branch so the push ref is clean.
     await g.raw(["worktree", "add", "-B", `_deploy_${target}`, dir, remoteRef(target)]);
     const wt = git(dir);
+    await setAuthor(wt, author);
     const authed = await authedRemoteUrl();
     try {
       const beforeSha = (await wt.raw(["rev-parse", "HEAD"])).trim();
@@ -369,13 +383,15 @@ export async function mergeAndPush(
 export async function revertOnBranch(
   target: string,
   opts: { mode: "undo-last" } | { mode: "revert-sha"; sha: string },
-  message: string
+  message: string,
+  author: Author
 ): Promise<MergeResult> {
   return withLock(async () => {
     const g = await ensureRepo(true);
     const dir = newWorktreeDir();
     await g.raw(["worktree", "add", "-B", `_deploy_${target}`, dir, remoteRef(target)]);
     const wt = git(dir);
+    await setAuthor(wt, author);
     const authed = await authedRemoteUrl();
     try {
       const beforeSha = (await wt.raw(["rev-parse", "HEAD"])).trim();

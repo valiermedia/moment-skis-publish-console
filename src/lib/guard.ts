@@ -47,3 +47,13 @@ export async function requireAdmin(): Promise<
 export function nowISO(): string {
   return new Date().toISOString();
 }
+
+/**
+ * Git commit author for the acting user. Uses GitHub's noreply email format so
+ * the commit is attributed to them on GitHub (the merge/revert is still performed
+ * by the App token — this only stamps the commit author).
+ */
+export function authorFor(login: string): { name: string; email: string } {
+  const safe = login || "publish-console";
+  return { name: safe, email: `${safe}@users.noreply.github.com` };
+}
