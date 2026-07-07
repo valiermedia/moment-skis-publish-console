@@ -1,6 +1,6 @@
 # Deploy runbook — droplet
 
-Target droplet: `64.23.224.85` (Ubuntu 24.04, Caddy + PM2). App port **3006**.
+Target droplet: `64.23.224.85` (Ubuntu 24.04, Caddy + PM2). App port **3008**.
 Suggested domain **moment-skis.valier.dev**.
 
 > **First deploy needs one-time droplet setup (steps 1–4).** These touch shared infra
@@ -95,4 +95,4 @@ pm2 restart moment-skis-publish-console
   deploys and keeps its fetched refs. It's created automatically on first `/api/state`.
 - The **sqlite db** (`shared/console.db`) also lives outside releases — audit log + QA
   sign-offs persist across deploys.
-- `next start` runs on `127.0.0.1:3006`; Caddy terminates TLS and proxies to it.
+- `next start` runs on `127.0.0.1:3008`; Caddy terminates TLS and proxies to it.

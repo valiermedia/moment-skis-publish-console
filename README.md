@@ -78,7 +78,7 @@ deploy/                      ecosystem.config.cjs (PM2), Caddyfile.snippet, depl
 ```bash
 cp .env.example .env      # then fill it in (see OPERATOR-SETUP.md)
 npm install
-npm run dev               # http://localhost:3006
+npm run dev               # http://localhost:3008
 ```
 
 Without real GitHub App / Shopify credentials the UI loads but `/api/state` will show

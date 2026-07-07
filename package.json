@@ -4,9 +4,9 @@
   "private": true,
   "description": "Self-serve deployment console for the Moment Skis Shopify theme (GitHub branches drive Shopify).",
   "scripts": {
-    "dev": "next dev -p 3006",
+    "dev": "next dev -p 3008",
     "build": "next build",
-    "start": "next start -p 3006",
+    "start": "next start -p 3008",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },

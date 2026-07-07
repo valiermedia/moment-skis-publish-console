@@ -29,7 +29,7 @@ Create at **GitHub → Settings → Developer settings → OAuth Apps → New**.
 
 - **Homepage URL:** your console URL (e.g. `https://moment-skis.valier.dev`)
 - **Authorization callback URL:** `<that URL>/api/auth/callback/github`
-  (dev: `http://localhost:3006/api/auth/callback/github`)
+  (dev: `http://localhost:3008/api/auth/callback/github`)
 
 Copy the **Client ID** and a generated **Client secret** into:
 
@@ -42,7 +42,7 @@ Also generate a NextAuth secret:
 
 ```
 NEXTAUTH_SECRET=$(openssl rand -base64 32)
-NEXTAUTH_URL=https://moment-skis.valier.dev   # or http://localhost:3006 in dev
+NEXTAUTH_URL=https://moment-skis.valier.dev   # or http://localhost:3008 in dev
 ```
 
 ## 2. GitHub App (all repo writes)

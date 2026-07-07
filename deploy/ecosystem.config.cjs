@@ -7,13 +7,13 @@ module.exports = {
     {
       name: "moment-skis-publish-console",
       script: "node_modules/.bin/next",
-      args: "start -p 3006",
+      args: "start -p 3008",
       cwd: "/opt/apps/moment-skis-publish-console/current",
       instances: 1,
       exec_mode: "fork",
       env: {
         NODE_ENV: "production",
-        PORT: "3006",
+        PORT: "3008",
       },
       out_file: "/opt/apps/moment-skis-publish-console/logs/out.log",
       error_file: "/opt/apps/moment-skis-publish-console/logs/error.log",
