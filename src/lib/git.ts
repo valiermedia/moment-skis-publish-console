@@ -314,7 +314,11 @@ export async function mergeAndPush(
   target: string,
   picks: Record<string, "ours" | "theirs">,
   message: string,
-  author: Author
+  author: Author,
+  // Up-merges into staging/live keep an explicit merge commit (--no-ff). Down-merges
+  // (re-level / sync into a person-branch) must fast-forward when possible, otherwise
+  // they add a commit the source lacks and the branch reads as perpetually "ahead".
+  noFf = true
 ): Promise<MergeResult> {
   return withLock(async () => {
     const g = await ensureRepo(true);
@@ -327,8 +331,11 @@ export async function mergeAndPush(
     try {
       const beforeSha = (await wt.raw(["rev-parse", "HEAD"])).trim();
       let conflicted = false;
+      const mergeArgs = noFf
+        ? ["merge", "--no-ff", "-m", message, remoteRef(source)]
+        : ["merge", "--ff", "-m", message, remoteRef(source)];
       try {
-        await wt.raw(["merge", "--no-ff", "-m", message, remoteRef(source)]);
+        await wt.raw(mergeArgs);
       } catch {
         conflicted = true;
       }

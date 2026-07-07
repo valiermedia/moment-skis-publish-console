@@ -57,7 +57,8 @@ export async function POST(req: Request) {
         branch,
         {},
         `Re-level "${branch}" to staging (via Publish Console)`,
-        authorFor(login)
+        authorFor(login),
+        false // fast-forward the person-branch up to staging (no phantom commit)
       );
       recordAudit({
         userLogin: login,

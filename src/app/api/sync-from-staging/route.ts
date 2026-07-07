@@ -35,7 +35,8 @@ export async function POST(req: Request) {
       branch,
       picks,
       `Sync "${branch}" from staging (via Publish Console, by ${login})`,
-      authorFor(login)
+      authorFor(login),
+      false // fast-forward the branch up to staging when possible
     );
     recordAudit({
       userLogin: login,
