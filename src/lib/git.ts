@@ -59,17 +59,17 @@ async function ensureRepo(): Promise<SimpleGit> {
 
   if (!fs.existsSync(path.join(dir, ".git"))) {
     fs.mkdirSync(path.dirname(dir), { recursive: true });
-    const g = simpleGit({ maxConcurrentProcesses: 1 });
-    await g.clone(authed, dir, ["--no-single-branch"]);
+    // Deterministic raw command: git clone --no-single-branch <url> <dir>
+    // (the simple-git .clone()/.fetch() wrappers mis-ordered the url vs refspec).
+    const g0 = simpleGit({ maxConcurrentProcesses: 1 });
+    await g0.raw(["clone", "--no-single-branch", authed, dir]);
     // strip the token out of persisted config immediately
-    await git(dir).remote(["set-url", "origin", plain]);
+    await git(dir).raw(["remote", "set-url", "origin", plain]);
   }
 
   const g = git(dir);
-  await g.fetch(authed, [
-    "+refs/heads/*:refs/remotes/origin/*",
-    "--prune",
-  ]);
+  // git fetch --prune <url> +refs/heads/*:refs/remotes/origin/*
+  await g.raw(["fetch", "--prune", authed, "+refs/heads/*:refs/remotes/origin/*"]);
   return g;
 }
 
