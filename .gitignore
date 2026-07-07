@@ -9,7 +9,9 @@
 /build
 
 # local runtime state (server-side clone + sqlite) — never commit
-/data
+/data/*
+# ...but DO commit the generated theme architecture map (read at request time)
+!/data/architecture
 
 # env — secrets, never commit
 .env

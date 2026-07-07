@@ -17,6 +17,7 @@ import {
   ArrowUpToLine,
   ArrowDownToLine,
   Settings,
+  Boxes,
 } from "lucide-react";
 import { C, MONO } from "@/lib/ui";
 
@@ -526,6 +527,14 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
               <RefreshCw size={14} style={{ animation: refreshing ? "spin 0.8s linear infinite" : "none" }} />
               {refreshing ? "Refreshing…" : "Refresh"}
             </button>
+            <Link
+              href="/architecture"
+              title="Theme architecture map"
+              className="inline-flex items-center gap-2"
+              style={{ background: C.paper, border: `1px solid ${C.line}`, borderRadius: 999, padding: "7px 11px", color: C.muted, fontSize: 13, textDecoration: "none" }}
+            >
+              <Boxes size={14} /> Architecture
+            </Link>
             {isAdmin && (
               <Link
                 href="/admin"

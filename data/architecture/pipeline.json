@@ -1,0 +1,63 @@
+{
+  "analyzedAt": "2026-07-07T21:45:09.546Z",
+  "nodes": [
+    {
+      "id": "merritt",
+      "branch": "merritt",
+      "tier": "person",
+      "label": "Merritt",
+      "color": "#0C7C92",
+      "themeId": 162044772609
+    },
+    {
+      "id": "luke",
+      "branch": "luke",
+      "tier": "person",
+      "label": "Luke",
+      "color": "#B2603A",
+      "themeId": 162044641537
+    },
+    {
+      "id": "max",
+      "branch": "max",
+      "tier": "person",
+      "label": "Max",
+      "color": "#6A5AA6",
+      "themeId": 162044674305
+    },
+    {
+      "id": "staging",
+      "branch": "staging",
+      "tier": "staging",
+      "label": "Staging",
+      "color": null,
+      "themeId": 162043855105
+    },
+    {
+      "id": "live",
+      "branch": "live",
+      "tier": "live",
+      "label": "Live",
+      "color": null,
+      "themeId": 162043560193
+    }
+  ],
+  "edges": [
+    {
+      "from": "merritt",
+      "to": "staging"
+    },
+    {
+      "from": "luke",
+      "to": "staging"
+    },
+    {
+      "from": "max",
+      "to": "staging"
+    },
+    {
+      "from": "staging",
+      "to": "live"
+    }
+  ]
+}

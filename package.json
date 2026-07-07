@@ -13,6 +13,7 @@
   "dependencies": {
     "@octokit/auth-app": "^7.1.5",
     "@octokit/rest": "^21.1.1",
+    "@xyflow/react": "^12.11.2",
     "better-sqlite3": "^11.8.1",
     "eslint-config-next": "^15.5.20",
     "lucide-react": "^0.487.0",
