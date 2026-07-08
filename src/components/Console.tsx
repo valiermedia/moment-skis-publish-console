@@ -62,11 +62,24 @@ interface VersionView {
   at: string;
   when: string;
 }
+interface ThemeCard {
+  branch: string;
+  authorLogin: string;
+  authorName: string;
+  authorColor: string;
+  previewUrl: string | null;
+  version: string | null;
+  ahead: number;
+  behind: number;
+  exists: boolean;
+  isCurrentUser: boolean;
+}
 interface State {
   user: { login: string; name: string; color: string };
   repo: { owner: string; repo: string; liveBranch: string; stagingBranch: string };
   store: { publicDomain: string; devEmail: string };
   updates: Update[];
+  themes: ThemeCard[];
   staging: {
     sha: string;
     ahead: number;
@@ -447,6 +460,29 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
     }
   };
 
+  // Sync a named theme card down to staging. Clean-but-behind branches fast-forward
+  // with no picks; if the theme has diverged and conflicts, the endpoint aborts and
+  // we point the user at the update card above (which has the conflict resolver).
+  const syncTheme = async (t: ThemeCard) => {
+    setBusy(`synctheme:${t.branch}`);
+    const { ok, data } = await post("/api/sync-from-staging", { branch: t.branch });
+    setBusy(null);
+    if (ok) {
+      setToast(
+        data.alreadyUpToDate
+          ? `${t.authorName}’s theme was already up to date with staging.`
+          : `Synced — ${t.authorName}’s theme is caught up with staging.`
+      );
+      await load();
+    } else if (t.ahead > 0) {
+      setToast(
+        `Couldn’t auto-sync — ${t.authorName}’s theme has its own changes that overlap staging. Resolve it under “Updates to add to staging” above.`
+      );
+    } else {
+      setToast(`Couldn’t sync: ${data.detail || data.error}`);
+    }
+  };
+
   const qaReview = async () => {
     if (state?.staging.previewUrl) window.open(state.staging.previewUrl, "_blank", "noopener");
     setBusy("qa");
@@ -791,6 +827,95 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
                 )}
               </>
             )
+          )}
+        </div>
+
+        {/* ===== THEMES ===== */}
+        <div className="flex items-baseline justify-between" style={{ marginBottom: 4 }}>
+          <h2 style={{ fontSize: 16, fontWeight: 600, margin: 0 }}>Themes</h2>
+          <span style={{ fontSize: 13, color: C.faint }}>
+            {state
+              ? state.themes.filter((t) => t.behind > 0).length > 0
+                ? `${state.themes.filter((t) => t.behind > 0).length} behind staging`
+                : "all up to date"
+              : ""}
+          </span>
+        </div>
+        <p style={{ fontSize: 13, color: C.muted, margin: "0 0 12px" }}>
+          Each person’s preview theme. Sync a theme down to staging to catch it up before working on it.
+        </p>
+
+        <div className="flex flex-col" style={{ gap: 12, marginBottom: 30 }}>
+          {state?.themes.map((t) => {
+            const busySync = busy === `synctheme:${t.branch}`;
+            const upToDate = t.exists && t.behind === 0;
+            return (
+              <div
+                key={t.branch}
+                className="card"
+                style={{
+                  background: t.behind > 0 ? C.warnBg : C.paper,
+                  border: `1px solid ${C.line}`,
+                  borderRadius: 12,
+                  padding: 16,
+                }}
+              >
+                <div className="flex items-center justify-between gap-3" style={{ flexWrap: "wrap" }}>
+                  <div className="flex items-center gap-2" style={{ minWidth: 200 }}>
+                    <Avatar name={t.authorName} color={t.authorColor} size={24} />
+                    <div>
+                      <div style={{ fontSize: 15, fontWeight: 500 }}>
+                        {t.authorName}
+                        {t.isCurrentUser && <span style={{ color: C.faint, fontWeight: 400 }}> (you)</span>}
+                      </div>
+                      <div className="flex items-center gap-2" style={{ marginTop: 3 }}>
+                        <span style={{ fontFamily: MONO, fontSize: 12, color: C.faint }}>{t.branch}</span>
+                        {t.version && (
+                          <>
+                            <span style={{ color: C.faint }}>·</span>
+                            <span style={{ fontSize: 12, color: C.faint }}>{t.version}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ fontSize: 13 }}>
+                    {!t.exists ? (
+                      <span style={{ color: C.faint }}>No branch yet</span>
+                    ) : t.behind > 0 ? (
+                      <span className="inline-flex items-center gap-1" style={{ color: C.warnFg, fontWeight: 500 }}>
+                        <AlertTriangle size={14} /> Behind staging — {t.behind} to pull
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1" style={{ color: C.okFg, fontWeight: 500 }}>
+                        <Check size={14} /> Up to date{t.ahead > 0 ? ` · ${t.ahead} to stage` : ""}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2" style={{ marginTop: 14, flexWrap: "wrap" }}>
+                  <Btn
+                    kind={t.behind > 0 ? "publish" : "ghost"}
+                    onClick={() => syncTheme(t)}
+                    disabled={busySync || !t.exists || upToDate}
+                  >
+                    <ArrowDownToLine size={15} /> {busySync ? "Syncing…" : "Sync from staging"}
+                  </Btn>
+                  {t.previewUrl && (
+                    <Btn kind="ghost" href={t.previewUrl}>
+                      <Eye size={15} /> Preview
+                    </Btn>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+          {state && state.themes.length === 0 && (
+            <div style={{ textAlign: "center", color: C.muted, padding: "28px 0", fontSize: 14 }}>
+              No themes configured.
+            </div>
           )}
         </div>
 

@@ -569,26 +569,70 @@ export async function computeNextVersions(): Promise<{
   });
 }
 
+/** Highest version tag reachable from a ref. Unlocked — caller holds the lock. */
+async function highestMergedTag(g: SimpleGit, ref: string): Promise<string | null> {
+  let raw = "";
+  try {
+    raw = await g.raw(["tag", "--merged", ref, "--list", "v*"]);
+  } catch {
+    return null;
+  }
+  let best: [number, number, number] | null = null;
+  let bestTag: string | null = null;
+  for (const t of raw.split("\n").map((s) => s.trim()).filter(Boolean)) {
+    const s = parseSemver(t);
+    if (s && (!best || cmpSemver(s, best) > 0)) {
+      best = s;
+      bestTag = t;
+    }
+  }
+  return bestTag;
+}
+
 /** Highest version tag reachable from origin/<branch> (forward-only branches). */
 export async function versionForBranch(branch: string): Promise<string | null> {
   return withLock(async () => {
     const g = await ensureRepo();
-    let raw = "";
-    try {
-      raw = await g.raw(["tag", "--merged", remoteRef(branch), "--list", "v*"]);
-    } catch {
-      return null;
-    }
-    let best: [number, number, number] | null = null;
-    let bestTag: string | null = null;
-    for (const t of raw.split("\n").map((s) => s.trim()).filter(Boolean)) {
-      const s = parseSemver(t);
-      if (s && (!best || cmpSemver(s, best) > 0)) {
-        best = s;
-        bestTag = t;
+    return highestMergedTag(g, remoteRef(branch));
+  });
+}
+
+export interface ThemeStatus {
+  branch: string;
+  exists: boolean; // does origin/<branch> exist?
+  ahead: number; // commits on the branch that staging doesn't have (own unstaged work)
+  behind: number; // commits on staging the branch doesn't have (out of date)
+  version: string | null; // highest version tag the branch has caught up to
+}
+
+/**
+ * Sync status of each named theme branch relative to staging. `behind > 0` means
+ * staging has moved on and the theme should Sync to catch up before editing.
+ * One lock covers all branches (a handful) so a state build stays cheap.
+ */
+export async function themeStatuses(branches: string[]): Promise<ThemeStatus[]> {
+  return withLock(async () => {
+    const g = await ensureRepo();
+    const staging = remoteRef(config.stagingBranch);
+    const out: ThemeStatus[] = [];
+    for (const branch of branches) {
+      const ref = remoteRef(branch);
+      let exists = true;
+      try {
+        await g.raw(["rev-parse", "--verify", "--quiet", ref]);
+      } catch {
+        exists = false;
       }
+      if (!exists) {
+        out.push({ branch, exists: false, ahead: 0, behind: 0, version: null });
+        continue;
+      }
+      const ahead = Number((await g.raw(["rev-list", "--count", `${staging}..${ref}`])).trim());
+      const behind = Number((await g.raw(["rev-list", "--count", `${ref}..${staging}`])).trim());
+      const version = await highestMergedTag(g, ref);
+      out.push({ branch, exists: true, ahead, behind, version });
     }
-    return bestTag;
+    return out;
   });
 }
 

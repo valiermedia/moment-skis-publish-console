@@ -7,6 +7,7 @@ import {
   listVersions,
   versionForBranch,
   computeNextVersions,
+  themeStatuses,
   type FileConflict,
   type Version,
 } from "./git";
@@ -33,11 +34,25 @@ export interface VersionView extends Version {
   when: string;
 }
 
+export interface ThemeCard {
+  branch: string;
+  authorLogin: string;
+  authorName: string;
+  authorColor: string;
+  previewUrl: string | null;
+  version: string | null;
+  ahead: number; // own work not yet on staging
+  behind: number; // staging changes this theme hasn't pulled down
+  exists: boolean; // branch present on the remote
+  isCurrentUser: boolean;
+}
+
 export interface ConsoleState {
   user: { login: string; name: string; color: string };
   repo: { owner: string; repo: string; liveBranch: string; stagingBranch: string };
   store: { publicDomain: string; devEmail: string };
   updates: Update[];
+  themes: ThemeCard[];
   staging: {
     sha: string;
     ahead: number;
@@ -112,6 +127,32 @@ export async function buildConsoleState(currentLogin: string): Promise<ConsoleSt
     });
   }
 
+  // Named theme cards: every configured branch except live/staging, shown whether
+  // or not it has pending updates — so a theme that's merely behind (clean but
+  // stale) still surfaces with a Sync button.
+  const themeBranches = Object.keys(themes().branches).filter(
+    (b) => b !== config.liveBranch && b !== config.stagingBranch
+  );
+  const statuses = await themeStatuses(themeBranches);
+  const statusByBranch = new Map(statuses.map((s) => [s.branch, s]));
+  const themeCards: ThemeCard[] = themeBranches.map((branch) => {
+    const st = statusByBranch.get(branch);
+    const person = personForBranch(branch, branch);
+    const themeId = themeIdForBranch(branch);
+    return {
+      branch,
+      authorLogin: person.login,
+      authorName: person.name,
+      authorColor: person.color,
+      previewUrl: themeId ? themePreviewUrl(themeId) : null,
+      version: st?.version ?? null,
+      ahead: st?.ahead ?? 0,
+      behind: st?.behind ?? 0,
+      exists: st?.exists ?? false,
+      isCurrentUser: branch.toLowerCase() === currentLogin.toLowerCase(),
+    };
+  });
+
   const staging = await stagingAhead();
   const live = await gitLiveState();
   const shopify = await readLiveTheme();
@@ -145,6 +186,7 @@ export async function buildConsoleState(currentLogin: string): Promise<ConsoleSt
     },
     store: { publicDomain: config.storePublicDomain, devEmail: config.devEmail },
     updates,
+    themes: themeCards,
     staging: {
       sha: staging.sha,
       ahead: staging.ahead,
