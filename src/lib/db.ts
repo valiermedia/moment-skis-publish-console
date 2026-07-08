@@ -74,6 +74,20 @@ export function deleteSettingRow(key: string): void {
   get().prepare(`DELETE FROM settings WHERE key = ?`).run(key);
 }
 
+// ---- live version pointer -------------------------------------------------
+// Which version is CURRENTLY live. Tracked here (not by git ancestry) because
+// undo/restore rewind live's tree without changing which tags are ancestors.
+const LIVE_VERSION_KEY = "__live_version__";
+
+export function getLiveVersion(): string | null {
+  const row = getSettingRow(LIVE_VERSION_KEY);
+  return row ? row.value : null;
+}
+
+export function setLiveVersion(version: string, by: string, at: string): void {
+  upsertSettingRow({ key: LIVE_VERSION_KEY, value: version, isSecret: false, updatedBy: by, at });
+}
+
 export interface QaSignoff {
   id: number;
   staging_sha: string;

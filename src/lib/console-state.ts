@@ -4,9 +4,13 @@ import {
   previewMerge,
   stagingAhead,
   liveState as gitLiveState,
+  listVersions,
+  versionForBranch,
+  computeNextVersions,
   type FileConflict,
+  type Version,
 } from "./git";
-import { qaSignoffsFor, recentAudit, type QaSignoff, type AuditEntry } from "./db";
+import { qaSignoffsFor, recentAudit, getLiveVersion, type QaSignoff, type AuditEntry } from "./db";
 import { readLiveTheme, stagingPreviewUrl, themePreviewUrl, type ThemeInfo } from "./shopify";
 
 export interface Update {
@@ -21,6 +25,12 @@ export interface Update {
   clean: boolean;
   conflicts: FileConflict[];
   previewUrl: string | null;
+  version: string | null;
+  behindLive: boolean;
+}
+
+export interface VersionView extends Version {
+  when: string;
 }
 
 export interface ConsoleState {
@@ -36,12 +46,15 @@ export interface ConsoleState {
     qa: { signedOff: boolean; signoffs: QaSignoff[] };
     publishClean: boolean;
     publishConflicts: FileConflict[];
+    currentVersion: string | null;
+    nextVersions: { current: string; major: string; minor: string; patch: string };
   };
   live: {
     sha: string;
-    recent: { sha: string; subject: string; author: string; iso: string; when: string }[];
+    versions: VersionView[];
+    currentVersion: string | null;
     shopify: ThemeInfo | null;
-    lastPublish: { subject: string; author: string; iso: string; when: string } | null;
+    lastPublish: { version: string; description: string; author: string; iso: string; when: string } | null;
   };
   audit: AuditEntry[];
 }
@@ -73,11 +86,15 @@ function personForBranch(branch: string, authorLogin: string) {
 export async function buildConsoleState(currentLogin: string): Promise<ConsoleState> {
   const ahead = await branchesAheadOfStaging();
 
+  const stagingVersion = await versionForBranch(config.stagingBranch);
+  const liveVersionByAncestry = await versionForBranch(config.liveBranch);
+
   const updates: Update[] = [];
   for (const b of ahead) {
     const preview = await previewMerge(b.branch, config.stagingBranch);
     const person = personForBranch(b.branch, b.authorLogin);
     const themeId = themeIdForBranch(b.branch);
+    const version = await versionForBranch(b.branch);
     updates.push({
       branch: b.branch,
       authorLogin: person.login,
@@ -90,6 +107,8 @@ export async function buildConsoleState(currentLogin: string): Promise<ConsoleSt
       clean: preview.clean,
       conflicts: preview.conflicts,
       previewUrl: themeId ? themePreviewUrl(themeId) : null,
+      version,
+      behindLive: Boolean(stagingVersion && version !== stagingVersion),
     });
   }
 
@@ -105,16 +124,15 @@ export async function buildConsoleState(currentLogin: string): Promise<ConsoleSt
       : { clean: true, conflicts: [] as FileConflict[] };
 
   const signoffs = qaSignoffsFor(staging.sha);
-
   const cur = personFor(currentLogin);
 
-  const lastPublish = live.recent[0]
-    ? {
-        subject: live.recent[0].subject,
-        author: live.recent[0].author,
-        iso: live.recent[0].iso,
-        when: relativeTime(live.recent[0].iso),
-      }
+  const versions = await listVersions();
+  const nextVersions = await computeNextVersions();
+  // Current live version: the DB pointer wins (survives undo/restore), else ancestry.
+  const currentLiveVersion = getLiveVersion() || liveVersionByAncestry || versions[0]?.version || null;
+  const latest = versions.find((v) => v.version === currentLiveVersion) || versions[0] || null;
+  const lastPublish = latest
+    ? { version: latest.version, description: latest.description, author: latest.author, iso: latest.at, when: relativeTime(latest.at) }
     : null;
 
   return {
@@ -135,10 +153,13 @@ export async function buildConsoleState(currentLogin: string): Promise<ConsoleSt
       qa: { signedOff: signoffs.length > 0, signoffs },
       publishClean: publishPreview.clean,
       publishConflicts: publishPreview.conflicts,
+      currentVersion: stagingVersion,
+      nextVersions,
     },
     live: {
       sha: live.sha,
-      recent: live.recent.map((c) => ({ ...c, when: relativeTime(c.iso) })),
+      versions: versions.map((v) => ({ ...v, when: relativeTime(v.at) })),
+      currentVersion: currentLiveVersion,
       shopify,
       lastPublish,
     },

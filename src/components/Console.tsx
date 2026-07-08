@@ -43,12 +43,23 @@ interface Update {
   clean: boolean;
   conflicts: FileConflict[];
   previewUrl: string | null;
+  version: string | null;
+  behindLive: boolean;
 }
 interface Commit {
   sha: string;
   subject: string;
   author: string;
   iso: string;
+  when: string;
+}
+interface VersionView {
+  version: string;
+  sha: string;
+  type: string;
+  description: string;
+  author: string;
+  at: string;
   when: string;
 }
 interface State {
@@ -64,12 +75,15 @@ interface State {
     qa: { signedOff: boolean; signoffs: { user_login: string; signed_at: string }[] };
     publishClean: boolean;
     publishConflicts: FileConflict[];
+    currentVersion: string | null;
+    nextVersions: { current: string; major: string; minor: string; patch: string };
   };
   live: {
     sha: string;
-    recent: Commit[];
+    versions: VersionView[];
+    currentVersion: string | null;
     shopify: { name: string; role: string; updated_at: string; previewUrl: string | null } | null;
-    lastPublish: { subject: string; author: string; iso: string; when: string } | null;
+    lastPublish: { version: string; description: string; author: string; iso: string; when: string } | null;
   };
 }
 
@@ -171,6 +185,20 @@ function Badge({ ok, okText = "Ready", warnText = "Needs review" }: { ok: boolea
     >
       {ok ? <Check size={14} /> : <AlertTriangle size={14} />}
       {ok ? okText : warnText}
+    </span>
+  );
+}
+
+function VersionTag({ type }: { type: string }) {
+  const map: Record<string, { label: string; bg: string; fg: string }> = {
+    major: { label: "Major", bg: "#EAE2F4", fg: "#6A4FA0" },
+    minor: { label: "Minor", bg: C.accentTint, fg: C.accent },
+    patch: { label: "Patch", bg: "#EDECE6", fg: "#8A7A3C" },
+  };
+  const m = map[type] || { label: type || "—", bg: C.bg, fg: C.muted };
+  return (
+    <span style={{ fontSize: 11, fontWeight: 600, background: m.bg, color: m.fg, borderRadius: 999, padding: "2px 9px", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+      {m.label}
     </span>
   );
 }
@@ -317,8 +345,15 @@ function ConflictResolver({
 type Modal =
   | { kind: "publish" }
   | { kind: "undo" }
-  | { kind: "restore"; sha: string; subject: string }
+  | { kind: "restore"; sha: string; version: string; description: string }
   | null;
+
+type VType = "major" | "minor" | "patch";
+const VERSION_TYPES: { key: VType; label: string; blurb: string }[] = [
+  { key: "major", label: "Major", blurb: "A rebuild or big redesign that changes how the site looks or works." },
+  { key: "minor", label: "Minor", blurb: "A new feature or a noticeable addition to the site." },
+  { key: "patch", label: "Small patch", blurb: "A small fix or tweak — copy edits, minor styling, quick corrections." },
+];
 
 export default function Console({ currentLogin, isAdmin }: { currentLogin: string; isAdmin?: boolean }) {
   const [state, setState] = useState<State | null>(null);
@@ -327,8 +362,9 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
   const [modal, setModal] = useState<Modal>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
-
   const [refreshing, setRefreshing] = useState(false);
+  const [pubType, setPubType] = useState<VType>("minor");
+  const [pubDesc, setPubDesc] = useState("");
 
   const load = useCallback(async (force = false) => {
     try {
@@ -426,11 +462,17 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
 
   const doPublish = async () => {
     setBusy("publish");
-    const { ok, data } = await post("/api/publish", { picks: picks["__publish__"] || {} });
+    const { ok, data } = await post("/api/publish", {
+      type: pubType,
+      description: pubDesc.trim(),
+      picks: picks["__publish__"] || {},
+    });
     setBusy(null);
     setModal(null);
     if (ok) {
-      setToast("Published — staging is live on the site now.");
+      setToast(data.version ? `Published ${data.version} — it’s live now.` : "Published — it’s live now.");
+      setPubDesc("");
+      setPubType("minor");
       await load();
     } else {
       setToast(`Couldn’t publish: ${data.detail || data.error}`);
@@ -450,13 +492,13 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
     }
   };
 
-  const doRestore = async (sha: string) => {
+  const doRestore = async (sha: string, version: string) => {
     setBusy("restore");
-    const { ok, data } = await post("/api/restore", { sha });
+    const { ok, data } = await post("/api/restore", { sha, version });
     setBusy(null);
     setModal(null);
     if (ok) {
-      setToast("Restored — the live site is back to that version.");
+      setToast(version ? `Restored — ${version} is live again.` : "Restored — the live site is back to that version.");
       await load();
     } else {
       setToast(`Couldn’t restore: ${data.detail || data.error}`);
@@ -572,16 +614,23 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
               <div style={{ fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8FB9C4", fontWeight: 600 }}>
                 Live on the site
               </div>
-              <div style={{ fontSize: 20, fontWeight: 600, marginTop: 4 }}>{state?.store.publicDomain || "…"}</div>
-              <div style={{ fontSize: 13, color: "#AFC3CC", marginTop: 2 }}>
+              <div className="flex items-center gap-2" style={{ marginTop: 4 }}>
+                <span style={{ fontSize: 20, fontWeight: 600 }}>{state?.store.publicDomain || "…"}</span>
+                {state?.live.currentVersion && (
+                  <span style={{ fontSize: 12.5, fontWeight: 600, background: "#243645", color: "#CFE0E6", borderRadius: 999, padding: "3px 10px" }}>
+                    {state.live.currentVersion}
+                  </span>
+                )}
+              </div>
+              <div style={{ fontSize: 13, color: "#AFC3CC", marginTop: 3 }}>
                 {state?.live.lastPublish
-                  ? <>published {state.live.lastPublish.when} by {state.live.lastPublish.author} · {state.live.shopify?.name || state.live.sha.slice(0, 7)}</>
+                  ? <>published {state.live.lastPublish.when} by {state.live.lastPublish.author}{state.live.lastPublish.description ? ` · ${state.live.lastPublish.description}` : ""}</>
                   : state
-                    ? <>current version {state.live.shopify?.name || state.live.sha.slice(0, 7)}</>
+                    ? <>no versions published yet</>
                     : "loading…"}
               </div>
             </div>
-            {state && state.live.recent.length > 0 && (
+            {state && state.live.versions.length > 0 && (
               <div className="flex items-center gap-2" style={{ background: "#243645", borderRadius: 10, padding: "10px 12px" }}>
                 <span style={{ fontSize: 13, color: "#CFE0E6" }}>Something look wrong?</span>
                 <button
@@ -621,6 +670,14 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
                       <span style={{ fontSize: 13, color: C.faint }}>{u.when}</span>
                       <span style={{ color: C.faint }}>·</span>
                       <span style={{ fontFamily: MONO, fontSize: 12, color: C.faint }}>{u.branch}</span>
+                      {u.version && (
+                        <>
+                          <span style={{ color: C.faint }}>·</span>
+                          <span style={{ fontSize: 12, color: u.behindLive ? C.warnFg : C.faint }} title={u.behindLive ? "This theme is behind staging — sync to catch up" : "Up to date with staging"}>
+                            {u.version}{u.behindLive ? " · behind" : ""}
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
                   <Badge ok={resolved} />
@@ -737,27 +794,40 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
           )}
         </div>
 
-        {/* recently published */}
-        <h2 style={{ fontSize: 16, fontWeight: 600, margin: "0 0 12px" }}>Recently published</h2>
+        {/* versions */}
+        <h2 style={{ fontSize: 16, fontWeight: 600, margin: "0 0 12px" }}>Versions</h2>
         <div className="flex flex-col" style={{ gap: 8 }}>
-          {state?.live.recent.map((c) => (
-            <div
-              key={c.sha}
-              className="flex items-center justify-between"
-              style={{ background: C.paper, border: `1px solid ${C.line}`, borderRadius: 10, padding: "11px 14px", gap: 12, flexWrap: "wrap" }}
-            >
-              <div className="flex items-center gap-2" style={{ minWidth: 200, flex: 1 }}>
-                <span style={{ fontSize: 14.5 }}>{c.subject}</span>
-                <span style={{ color: C.faint }}>·</span>
-                <span style={{ fontSize: 13, color: C.faint }}>{c.author}, {c.when}</span>
+          {state?.live.versions.map((v) => {
+            const isLive = v.version === state.live.currentVersion;
+            return (
+              <div
+                key={v.version}
+                className="flex items-center justify-between"
+                style={{ background: C.paper, border: `1px solid ${isLive ? C.okFg : C.line}`, borderRadius: 10, padding: "11px 14px", gap: 12, flexWrap: "wrap" }}
+              >
+                <div style={{ minWidth: 200, flex: 1 }}>
+                  <div className="flex items-center gap-2" style={{ flexWrap: "wrap" }}>
+                    <span style={{ fontFamily: MONO, fontSize: 14, fontWeight: 600 }}>{v.version}</span>
+                    <VersionTag type={v.type} />
+                    {isLive && (
+                      <span style={{ fontSize: 11.5, fontWeight: 600, color: C.okFg, background: C.okBg, borderRadius: 999, padding: "2px 9px" }}>Live now</span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: 13.5, color: C.ink, marginTop: 4 }}>{v.description || <span style={{ color: C.faint }}>No description</span>}</div>
+                  <div style={{ fontSize: 12.5, color: C.faint, marginTop: 2 }}>{v.author}, {v.when}</div>
+                </div>
+                {!isLive && (
+                  <Btn kind="restore" onClick={() => setModal({ kind: "restore", sha: v.sha, version: v.version, description: v.description })}>
+                    <RotateCcw size={14} /> Restore this version
+                  </Btn>
+                )}
               </div>
-              <Btn kind="restore" onClick={() => setModal({ kind: "restore", sha: c.sha, subject: c.subject })}>
-                <RotateCcw size={14} /> Restore this version
-              </Btn>
+            );
+          })}
+          {state && state.live.versions.length === 0 && (
+            <div style={{ color: C.faint, fontSize: 13.5, padding: "8px 0" }}>
+              No versions yet. The first time you publish, you’ll pick a version number and it’ll show up here.
             </div>
-          ))}
-          {state && state.live.recent.length === 0 && (
-            <div style={{ color: C.faint, fontSize: 13.5, padding: "8px 0" }}>No publishes yet.</div>
           )}
         </div>
 
@@ -774,50 +844,85 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
           onClick={() => setModal(null)}
           style={{ position: "fixed", inset: 0, background: "rgba(24,36,46,.45)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20, zIndex: 50 }}
         >
-          <div onClick={(e) => e.stopPropagation()} style={{ background: C.paper, borderRadius: 16, padding: 24, maxWidth: 440, width: "100%" }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: C.paper, borderRadius: 16, padding: 24, maxWidth: modal.kind === "publish" ? 520 : 440, width: "100%", maxHeight: "90vh", overflowY: "auto" }}>
             <div className="flex items-start justify-between">
               <h3 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>
-                {modal.kind === "publish" ? "Publish to the live site?" : modal.kind === "undo" ? "Undo the last publish?" : "Restore this version?"}
+                {modal.kind === "publish" ? "Publish a new version" : modal.kind === "undo" ? "Undo the last publish?" : "Restore this version?"}
               </h3>
               <button onClick={() => setModal(null)} aria-label="Close" style={{ border: "none", background: "transparent", cursor: "pointer", color: C.faint }}>
                 <X size={20} />
               </button>
             </div>
-            <p style={{ fontSize: 14.5, color: C.muted, lineHeight: 1.6, margin: "12px 0 20px" }}>
-              {modal.kind === "publish" && (
-                <>
-                  Everything on staging will go live on {state.store.publicDomain} right away, and customers will see it immediately.
-                  {!state.staging.qa.signedOff && (
-                    <>
-                      {" "}
-                      <span style={{ color: C.warnFg }}>Heads up: this hasn’t been marked as reviewed in QA yet.</span>
-                    </>
+
+            {modal.kind === "publish" ? (
+              <div style={{ marginTop: 14 }}>
+                <p style={{ fontSize: 14, color: C.muted, lineHeight: 1.55, margin: "0 0 14px" }}>
+                  Everything on staging goes live on {state.store.publicDomain} right away. Pick what kind of change this is —
+                  the version number is set for you.
+                </p>
+                <div className="flex flex-col" style={{ gap: 8, marginBottom: 16 }}>
+                  {VERSION_TYPES.map((t) => {
+                    const on = pubType === t.key;
+                    const nextV = state.staging.nextVersions[t.key];
+                    return (
+                      <button
+                        key={t.key}
+                        onClick={() => setPubType(t.key)}
+                        style={{ textAlign: "left", background: on ? C.accentTint : C.paper, border: `1.5px solid ${on ? C.accent : C.line}`, borderRadius: 11, padding: "11px 13px", cursor: "pointer" }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span style={{ fontSize: 14.5, fontWeight: 600, color: C.ink }}>{t.label}</span>
+                          <span style={{ fontFamily: MONO, fontSize: 13, fontWeight: 600, color: on ? C.accent : C.faint }}>v{nextV}</span>
+                        </div>
+                        <div style={{ fontSize: 12.5, color: C.muted, marginTop: 3, lineHeight: 1.45 }}>{t.blurb}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+                <label style={{ fontSize: 13, fontWeight: 500, color: C.ink }}>What changed? (shown in the version history)</label>
+                <textarea
+                  value={pubDesc}
+                  onChange={(e) => setPubDesc(e.target.value)}
+                  rows={3}
+                  maxLength={500}
+                  placeholder="e.g. New winter homepage hero and updated shipping copy"
+                  style={{ width: "100%", marginTop: 6, border: `1px solid ${C.line}`, borderRadius: 9, padding: "9px 11px", fontSize: 14, fontFamily: "inherit", color: C.ink, resize: "vertical" }}
+                />
+                {!state.staging.qa.signedOff && (
+                  <div style={{ fontSize: 13, color: C.warnFg, background: C.warnBg, borderRadius: 9, padding: "8px 11px", marginTop: 10, lineHeight: 1.45 }}>
+                    Heads up: this hasn’t been marked as reviewed in QA yet.
+                  </div>
+                )}
+                <div className="flex justify-end gap-2" style={{ marginTop: 18 }}>
+                  <Btn kind="ghost" onClick={() => setModal(null)}>Cancel</Btn>
+                  <Btn kind="publish" onClick={doPublish} disabled={busy === "publish"}>
+                    <Check size={16} /> {busy === "publish" ? "Publishing…" : `Publish v${state.staging.nextVersions[pubType]}`}
+                  </Btn>
+                </div>
+              </div>
+            ) : (
+              <>
+                <p style={{ fontSize: 14.5, color: C.muted, lineHeight: 1.6, margin: "12px 0 20px" }}>
+                  {modal.kind === "undo" && <>This puts the live site back to how it was before the last publish. You can always publish again later.</>}
+                  {modal.kind === "restore" && (
+                    <>This puts the live site back to <strong>{modal.version}</strong>{modal.description ? ` (“${modal.description}”)` : ""}. You can always publish again later.</>
                   )}
-                </>
-              )}
-              {modal.kind === "undo" && <>This puts the live site back to how it was before the last publish. You can always publish again later.</>}
-              {modal.kind === "restore" && <>This puts the live site back to how it was at “{modal.subject}”. You can always publish again later.</>}
-            </p>
-            <div className="flex justify-end gap-2">
-              <Btn kind="ghost" onClick={() => setModal(null)}>
-                Cancel
-              </Btn>
-              {modal.kind === "publish" && (
-                <Btn kind="publish" onClick={doPublish} disabled={busy === "publish"}>
-                  <Check size={16} /> {busy === "publish" ? "Publishing…" : "Publish now"}
-                </Btn>
-              )}
-              {modal.kind === "undo" && (
-                <Btn kind="danger" onClick={doUndo} disabled={busy === "undo"}>
-                  <RotateCcw size={15} /> {busy === "undo" ? "Undoing…" : "Undo publish"}
-                </Btn>
-              )}
-              {modal.kind === "restore" && (
-                <Btn kind="danger" onClick={() => doRestore(modal.sha)} disabled={busy === "restore"}>
-                  <RotateCcw size={15} /> {busy === "restore" ? "Restoring…" : "Restore version"}
-                </Btn>
-              )}
-            </div>
+                </p>
+                <div className="flex justify-end gap-2">
+                  <Btn kind="ghost" onClick={() => setModal(null)}>Cancel</Btn>
+                  {modal.kind === "undo" && (
+                    <Btn kind="danger" onClick={doUndo} disabled={busy === "undo"}>
+                      <RotateCcw size={15} /> {busy === "undo" ? "Undoing…" : "Undo publish"}
+                    </Btn>
+                  )}
+                  {modal.kind === "restore" && (
+                    <Btn kind="danger" onClick={() => doRestore(modal.sha, modal.version)} disabled={busy === "restore"}>
+                      <RotateCcw size={15} /> {busy === "restore" ? "Restoring…" : "Restore version"}
+                    </Btn>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

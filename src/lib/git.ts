@@ -320,7 +320,19 @@ export async function mergeAndPush(
   // they add a commit the source lacks and the branch reads as perpetually "ahead".
   noFf = true
 ): Promise<MergeResult> {
-  return withLock(async () => {
+  return withLock(() => mergeAndPushCore(source, target, picks, message, author, noFf));
+}
+
+// Unlocked core so publishAsVersion() can merge + tag atomically under one lock.
+async function mergeAndPushCore(
+  source: string,
+  target: string,
+  picks: Record<string, "ours" | "theirs">,
+  message: string,
+  author: Author,
+  noFf: boolean
+): Promise<MergeResult> {
+  {
     const g = await ensureRepo(true);
     const dir = newWorktreeDir();
     // Work on an actual branch so the push ref is clean.
@@ -377,7 +389,7 @@ export async function mergeAndPush(
         /* ignore */
       }
     }
-  });
+  }
 }
 
 /**
@@ -457,5 +469,182 @@ export async function revertOnBranch(
         /* ignore */
       }
     }
+  });
+}
+
+// ============================ versioning ====================================
+// Versions are annotated git tags (v<major>.<minor>.<patch>) on the published
+// staging commit. Because the tag sits on the staging commit that gets merged
+// everywhere, each branch "is on" the highest tag reachable from it — so a person
+// syncing from staging picks the version up automatically. The tag annotation
+// carries the type + description; the tagger is the acting user.
+
+export type VersionType = "major" | "minor" | "patch";
+
+export interface Version {
+  version: string; // "2.1.0"
+  sha: string; // the (staging) commit the tag points to
+  type: VersionType | string;
+  description: string;
+  author: string;
+  at: string; // ISO
+}
+
+const US = "\x1f"; // field sep
+const RS = "\x1e"; // record sep
+
+function parseSemver(tag: string): [number, number, number] | null {
+  const m = tag.replace(/^v/, "").match(/^(\d+)\.(\d+)\.(\d+)$/);
+  return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : null;
+}
+function cmpSemver(a: [number, number, number], b: [number, number, number]): number {
+  for (let i = 0; i < 3; i++) if (a[i] !== b[i]) return a[i] - b[i];
+  return 0;
+}
+function parseAnnotation(contents: string): { type: string; description: string } {
+  // format written by publishAsVersion:  "type: <type>\n\n<description>"
+  const typeM = contents.match(/^type:\s*(\w+)/m);
+  const type = typeM ? typeM[1] : "";
+  const idx = contents.indexOf("\n\n");
+  const description = idx >= 0 ? contents.slice(idx + 2).trim() : "";
+  return { type, description };
+}
+
+async function readVersions(g: SimpleGit): Promise<Version[]> {
+  const fmt = ["%(refname:short)", "%(*objectname)", "%(objectname)", "%(taggername)", "%(taggerdate:iso-strict)", "%(contents)"].join(US) + RS;
+  let raw = "";
+  try {
+    raw = await g.raw(["for-each-ref", "--sort=-creatordate", `--format=${fmt}`, "refs/tags/v*"]);
+  } catch {
+    return [];
+  }
+  const out: Version[] = [];
+  for (const rec of raw.split(RS)) {
+    const line = rec.replace(/^\n/, "");
+    if (!line.trim()) continue;
+    const [name, derefSha, objSha, tagger, date, contents = ""] = line.split(US);
+    if (!parseSemver(name)) continue;
+    const { type, description } = parseAnnotation(contents);
+    out.push({
+      version: name,
+      sha: (derefSha || objSha || "").trim(),
+      type,
+      description,
+      author: tagger || "",
+      at: date || "",
+    });
+  }
+  return out;
+}
+
+export async function listVersions(): Promise<Version[]> {
+  return withLock(async () => {
+    const g = await ensureRepo();
+    return readVersions(g);
+  });
+}
+
+/** Current version + the next number for each bump type. */
+export async function computeNextVersions(): Promise<{
+  current: string;
+  major: string;
+  minor: string;
+  patch: string;
+}> {
+  return withLock(async () => {
+    const g = await ensureRepo();
+    const versions = await readVersions(g);
+    let base: [number, number, number] = [0, 0, 0];
+    for (const v of versions) {
+      const s = parseSemver(v.version);
+      if (s && cmpSemver(s, base) > 0) base = s;
+    }
+    const [M, m, p] = base;
+    return {
+      current: versions.length ? base.join(".") : "",
+      major: `${M + 1}.0.0`,
+      minor: `${M}.${m + 1}.0`,
+      patch: `${M}.${m}.${p + 1}`,
+    };
+  });
+}
+
+/** Highest version tag reachable from origin/<branch> (forward-only branches). */
+export async function versionForBranch(branch: string): Promise<string | null> {
+  return withLock(async () => {
+    const g = await ensureRepo();
+    let raw = "";
+    try {
+      raw = await g.raw(["tag", "--merged", remoteRef(branch), "--list", "v*"]);
+    } catch {
+      return null;
+    }
+    let best: [number, number, number] | null = null;
+    let bestTag: string | null = null;
+    for (const t of raw.split("\n").map((s) => s.trim()).filter(Boolean)) {
+      const s = parseSemver(t);
+      if (s && (!best || cmpSemver(s, best) > 0)) {
+        best = s;
+        bestTag = t;
+      }
+    }
+    return bestTag;
+  });
+}
+
+export interface PublishVersionResult {
+  version: string;
+  liveSha: string;
+  tagSha: string;
+  alreadyUpToDate: boolean;
+}
+
+/**
+ * Publish staging → live AND stamp a version: merge (up, --no-ff), then create +
+ * push an annotated tag on the published staging commit. One lock = atomic.
+ */
+export async function publishAsVersion(opts: {
+  type: VersionType;
+  description: string;
+  author: Author;
+  picks: Record<string, "ours" | "theirs">;
+  message: string;
+}): Promise<PublishVersionResult> {
+  return withLock(async () => {
+    const g = await ensureRepo(true);
+    const staging = config.stagingBranch;
+    const live = config.liveBranch;
+
+    // compute next version from existing tags
+    const existing = await readVersions(g);
+    let base: [number, number, number] = [0, 0, 0];
+    for (const v of existing) {
+      const s = parseSemver(v.version);
+      if (s && cmpSemver(s, base) > 0) base = s;
+    }
+    const [M, m, p] = base;
+    const next =
+      opts.type === "major" ? `${M + 1}.0.0` : opts.type === "minor" ? `${M}.${m + 1}.0` : `${M}.${m}.${p + 1}`;
+    const tagName = `v${next}`;
+
+    const stagingSha = (await g.raw(["rev-parse", remoteRef(staging)])).trim();
+
+    // merge staging -> live (unlocked core, we already hold the lock)
+    const merge = await mergeAndPushCore(staging, live, opts.picks, opts.message, opts.author, true);
+    if (merge.alreadyUpToDate) {
+      return { version: "", liveSha: merge.sha, tagSha: stagingSha, alreadyUpToDate: true };
+    }
+
+    // annotated tag on the published staging commit, authored by the acting user
+    const authed = await authedRemoteUrl();
+    const annotation = `type: ${opts.type}\n\n${opts.description || ""}`.trim();
+    await g.raw([
+      "-c", `user.name=${opts.author.name}`,
+      "-c", `user.email=${opts.author.email}`,
+      "tag", "-a", "-f", tagName, stagingSha, "-m", annotation,
+    ]);
+    await g.raw(["push", authed, "-f", `refs/tags/${tagName}`]);
+
+    return { version: tagName, liveSha: merge.sha, tagSha: stagingSha, alreadyUpToDate: false };
   });
 }

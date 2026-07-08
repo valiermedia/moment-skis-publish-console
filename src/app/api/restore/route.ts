@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAuthorized, nowISO, authorFor } from "@/lib/guard";
 import { config } from "@/lib/config";
 import { revertOnBranch } from "@/lib/git";
-import { recordAudit } from "@/lib/db";
+import { recordAudit, setLiveVersion } from "@/lib/db";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,33 +16,37 @@ export async function POST(req: Request) {
   if (!gate.ok) return gate.response;
   const { login } = gate.user;
 
-  let body: { sha?: string };
+  let body: { sha?: string; version?: string };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
   const sha = (body.sha || "").trim();
+  const version = (body.version || "").trim();
   if (!/^[0-9a-f]{7,40}$/i.test(sha)) {
     return NextResponse.json({ error: "A valid commit sha is required" }, { status: 400 });
   }
 
   try {
+    const label = version || sha.slice(0, 7);
     const res = await revertOnBranch(
       config.liveBranch,
       { mode: "revert-sha", sha },
-      `Restore live to ${sha.slice(0, 7)} (via Publish Console, by ${login})`,
+      `Restore live to ${label} (via Publish Console, by ${login})`,
       authorFor(login)
     );
+    // The restored version is now what's live.
+    if (version) setLiveVersion(version, login, nowISO());
     recordAudit({
       userLogin: login,
       action: "restore",
       target: config.liveBranch,
-      detail: `reverted live down to ${sha.slice(0, 7)}`,
+      detail: `restored live to ${label}`,
       resultSha: res.sha,
       at: nowISO(),
     });
-    return NextResponse.json({ ok: true, sha: res.sha, changed: res.merged });
+    return NextResponse.json({ ok: true, sha: res.sha, changed: res.merged, version: version || null });
   } catch (e) {
     return NextResponse.json(
       { error: "Could not restore that version", detail: (e as Error).message },
