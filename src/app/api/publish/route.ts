@@ -4,6 +4,7 @@ import { parsePicks } from "@/lib/picks";
 import { config } from "@/lib/config";
 import { publishAsVersion, type VersionType } from "@/lib/git";
 import { recordAudit, setLiveVersion } from "@/lib/db";
+import { catchUpIdleThemes } from "@/lib/theme-catchup";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -58,7 +59,14 @@ export async function POST(req: Request) {
       resultSha: res.liveSha,
       at: nowISO(),
     });
-    return NextResponse.json({ ok: true, version: res.version, sha: res.liveSha });
+
+    // Keep every idle theme current with staging as part of going live, so the
+    // team's previews all track the QA trunk. Safe fast-forwards only; best-effort.
+    const caughtUp = (await catchUpIdleThemes(login))
+      .filter((r) => r.caughtUp)
+      .map((r) => r.branch);
+
+    return NextResponse.json({ ok: true, version: res.version, sha: res.liveSha, caughtUp });
   } catch (e) {
     return NextResponse.json(
       { error: "Could not publish to live", detail: (e as Error).message },

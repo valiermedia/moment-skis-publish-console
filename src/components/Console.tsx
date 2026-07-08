@@ -437,10 +437,13 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
     const { ok, data } = await post("/api/add-to-staging", { branch: u.branch, picks: picks[u.branch] || {} });
     setBusy(null);
     if (ok) {
+      const caught = Array.isArray(data.caughtUp) ? (data.caughtUp as string[]).length : 0;
+      const caughtSuffix = caught > 0 ? ` ${caught} other theme${caught === 1 ? "" : "s"} auto-synced.` : "";
       setToast(
-        data.releveled
+        (data.releveled
           ? `Added to staging — “${u.title}” is on staging and ${u.authorName}’s theme is caught up.`
-          : `Added to staging — but couldn’t auto re-level ${u.authorName}’s branch. Ask your developer.`
+          : `Added to staging — but couldn’t auto re-level ${u.authorName}’s branch. Ask your developer.`) +
+          caughtSuffix
       );
       await load();
     } else {
@@ -842,7 +845,9 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
           </span>
         </div>
         <p style={{ fontSize: 13, color: C.muted, margin: "0 0 12px" }}>
-          Each person’s preview theme. Sync a theme down to staging to catch it up before working on it.
+          Each person’s preview theme. Themes with no changes of their own are caught up to staging
+          automatically when the team stages or publishes. A theme with its own work stays put — Sync it
+          when you’re ready. If you edit locally, <code style={{ fontFamily: MONO, fontSize: 12 }}>git pull</code> before you push.
         </p>
 
         <div className="flex flex-col" style={{ gap: 12, marginBottom: 30 }}>

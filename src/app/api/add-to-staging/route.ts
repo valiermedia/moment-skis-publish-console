@@ -4,6 +4,7 @@ import { parsePicks } from "@/lib/picks";
 import { config } from "@/lib/config";
 import { mergeAndPush } from "@/lib/git";
 import { recordAudit } from "@/lib/db";
+import { catchUpIdleThemes } from "@/lib/theme-catchup";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -81,12 +82,20 @@ export async function POST(req: Request) {
       });
     }
 
+    // 3) staging just moved — bring every OTHER idle theme (behind, no own work)
+    //    up to staging with a safe fast-forward, so nobody has to remember to sync.
+    //    Themes with their own commits are left for their owner. Best-effort.
+    const caughtUp = (await catchUpIdleThemes(login, [branch]))
+      .filter((r) => r.caughtUp)
+      .map((r) => r.branch);
+
     return NextResponse.json({
       ok: true,
       stagingSha: up.sha,
       addedToStaging: up.merged || up.alreadyUpToDate,
       releveled,
       relevelNote,
+      caughtUp,
     });
   } catch (e) {
     return NextResponse.json(
