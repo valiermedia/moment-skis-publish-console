@@ -251,27 +251,26 @@ export async function previewMerge(source: string, target: string): Promise<Merg
     const dir = newWorktreeDir();
     const wt = await addWorktree(g, dir, remoteRef(target));
     try {
-      try {
-        await wt.raw(["merge", "--no-commit", "--no-ff", remoteRef(source)]);
-        // no throw => clean (either merged or already up to date)
-        return { clean: true, conflicts: [] };
-      } catch {
-        // conflicts (or nothing to merge). Inspect.
-        const status = (await wt.raw(["diff", "--name-only", "--diff-filter=U"])).trim();
-        const files = status ? status.split("\n").map((s) => s.trim()).filter(Boolean) : [];
-        const conflicts: FileConflict[] = files.map((file, i) => {
-          const abs = path.join(dir, file);
-          let content = "";
-          try {
-            content = fs.readFileSync(abs, "utf8");
-          } catch {
-            content = "";
-          }
-          const { ours, theirs } = parseConflictFile(content);
-          return { id: `c${i + 1}`, file, ours, theirs };
-        });
-        return { clean: files.length === 0, conflicts };
-      }
+      // NOTE: simple-git's .raw does NOT reject on a merge-conflict exit code (git
+      // prints "CONFLICT" to stdout and exits 1, but simple-git resolves anyway).
+      // So never infer "clean" from the absence of a throw — always ask the index
+      // which files are unmerged after the attempt.
+      await wt.raw(["merge", "--no-commit", "--no-ff", remoteRef(source)]).catch(() => {});
+      const status = (await wt.raw(["diff", "--name-only", "--diff-filter=U"])).trim();
+      const files = status ? status.split("\n").map((s) => s.trim()).filter(Boolean) : [];
+      if (files.length === 0) return { clean: true, conflicts: [] };
+      const conflicts: FileConflict[] = files.map((file, i) => {
+        const abs = path.join(dir, file);
+        let content = "";
+        try {
+          content = fs.readFileSync(abs, "utf8");
+        } catch {
+          content = "";
+        }
+        const { ours, theirs } = parseConflictFile(content);
+        return { id: `c${i + 1}`, file, ours, theirs };
+      });
+      return { clean: false, conflicts };
     } finally {
       try {
         await wt.raw(["merge", "--abort"]);
@@ -342,18 +341,16 @@ async function mergeAndPushCore(
     const authed = await authedRemoteUrl();
     try {
       const beforeSha = (await wt.raw(["rev-parse", "HEAD"])).trim();
-      let conflicted = false;
       const mergeArgs = noFf
         ? ["merge", "--no-ff", "-m", message, remoteRef(source)]
         : ["merge", "--ff", "-m", message, remoteRef(source)];
-      try {
-        await wt.raw(mergeArgs);
-      } catch {
-        conflicted = true;
-      }
+      // simple-git's .raw does NOT reject on a merge-conflict exit code, so detect
+      // conflicts from the index (unmerged files) rather than a thrown error.
+      await wt.raw(mergeArgs).catch(() => {});
+      const status = (await wt.raw(["diff", "--name-only", "--diff-filter=U"])).trim();
+      const conflicted = status.length > 0;
 
       if (conflicted) {
-        const status = (await wt.raw(["diff", "--name-only", "--diff-filter=U"])).trim();
         const files = status ? status.split("\n").map((s) => s.trim()).filter(Boolean) : [];
         for (const file of files) {
           const side = picks[file];
@@ -422,7 +419,10 @@ export async function revertOnBranch(
           const args = ["revert", "--no-edit"];
           if (isMerge) args.push("-m", "1");
           args.push(head);
-          await wt.raw(args);
+          await wt.raw(args).catch(() => {});
+          // .raw doesn't reject on a revert conflict — check the index explicitly.
+          const u = (await wt.raw(["diff", "--name-only", "--diff-filter=U"])).trim();
+          if (u) throw new Error(`revert hit conflicts in ${u.replace(/\n/g, ", ")}`);
           // give the undo commit a clear message
           await wt.raw(["commit", "--amend", "-m", message]);
         } else {
@@ -438,7 +438,10 @@ export async function revertOnBranch(
             const args = ["revert", "--no-edit", "--no-commit"];
             if (isMerge) args.push("-m", "1");
             args.push(sha);
-            await wt.raw(args);
+            await wt.raw(args).catch(() => {});
+            // .raw doesn't reject on a revert conflict — check the index explicitly.
+            const u = (await wt.raw(["diff", "--name-only", "--diff-filter=U"])).trim();
+            if (u) throw new Error(`revert hit conflicts in ${u.replace(/\n/g, ", ")}`);
           }
           await wt.raw(["commit", "--no-edit", "-m", message]);
         }
