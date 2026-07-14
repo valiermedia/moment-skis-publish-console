@@ -32,6 +32,12 @@ interface FileConflict {
   ours: DiffLine[];
   theirs: DiffLine[];
 }
+interface FileRemoval {
+  file: string;
+  kind: "delete" | "revert";
+  linesRemoved: number;
+  lastAuthor: string;
+}
 interface Update {
   branch: string;
   authorLogin: string;
@@ -42,6 +48,7 @@ interface Update {
   ahead: number;
   clean: boolean;
   conflicts: FileConflict[];
+  removals: FileRemoval[];
   previewUrl: string | null;
   version: string | null;
   behindLive: boolean;
@@ -88,6 +95,7 @@ interface State {
     qa: { signedOff: boolean; signoffs: { user_login: string; signed_at: string }[] };
     publishClean: boolean;
     publishConflicts: FileConflict[];
+    publishRemovals: FileRemoval[];
     currentVersion: string | null;
     nextVersions: { current: string; major: string; minor: string; patch: string };
   };
@@ -355,6 +363,50 @@ function ConflictResolver({
   );
 }
 
+/**
+ * Destructive-change guard: a "clean" merge can still delete or revert work already
+ * on the target. Surface exactly what would be lost and require an explicit tick before
+ * the action proceeds. Never hard-blocks — you can always ship after acknowledging.
+ */
+function RemovalWarning({
+  removals,
+  acked,
+  onAck,
+  context,
+}: {
+  removals: FileRemoval[];
+  acked: boolean;
+  onAck: (v: boolean) => void;
+  context: string;
+}) {
+  if (!removals || removals.length === 0) return null;
+  return (
+    <div style={{ marginTop: 14, padding: "12px 14px", background: C.delBg, border: `1px solid ${C.delMark}`, borderRadius: 10 }}>
+      <div className="flex items-center gap-2" style={{ marginBottom: 8 }}>
+        <AlertTriangle size={15} color={C.delMark} />
+        <span style={{ fontSize: 13.5, fontWeight: 600, color: C.delMark }}>
+          This removes work already on {context}
+        </span>
+      </div>
+      <div className="flex flex-col" style={{ gap: 5, marginBottom: 10 }}>
+        {removals.map((r) => (
+          <div key={r.file} className="flex items-center gap-2" style={{ fontSize: 12.5, flexWrap: "wrap" }}>
+            <span style={{ fontWeight: 700, color: C.delMark, minWidth: 58 }}>
+              {r.kind === "delete" ? "DELETES" : "REVERTS"}
+            </span>
+            <span style={{ fontFamily: MONO, color: C.ink }}>{r.file}</span>
+            {r.lastAuthor && <span style={{ color: C.muted }}>· last changed by {r.lastAuthor}</span>}
+          </div>
+        ))}
+      </div>
+      <label className="flex items-center gap-2" style={{ fontSize: 13, color: C.ink, cursor: "pointer" }}>
+        <input type="checkbox" checked={acked} onChange={(e) => onAck(e.target.checked)} />
+        Yes, I intend to remove the above.
+      </label>
+    </div>
+  );
+}
+
 type Modal =
   | { kind: "publish" }
   | { kind: "undo" }
@@ -378,6 +430,9 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
   const [refreshing, setRefreshing] = useState(false);
   const [pubType, setPubType] = useState<VType>("minor");
   const [pubDesc, setPubDesc] = useState("");
+  // Destructive-change acknowledgments, keyed by scope (branch name, or "__publish__").
+  const [ackRemovals, setAckRemovals] = useState<Record<string, boolean>>({});
+  const ackRemoval = (scope: string, v: boolean) => setAckRemovals((a) => ({ ...a, [scope]: v }));
 
   const load = useCallback(async (force = false) => {
     try {
@@ -434,17 +489,20 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
 
   const addToStaging = async (u: Update) => {
     setBusy(`add:${u.branch}`);
-    const { ok, data } = await post("/api/add-to-staging", { branch: u.branch, picks: picks[u.branch] || {} });
+    const { ok, data } = await post("/api/add-to-staging", {
+      branch: u.branch,
+      picks: picks[u.branch] || {},
+      ackRemovals: ackRemovals[u.branch] === true,
+    });
     setBusy(null);
     if (ok) {
-      const caught = Array.isArray(data.caughtUp) ? (data.caughtUp as string[]).length : 0;
-      const caughtSuffix = caught > 0 ? ` ${caught} other theme${caught === 1 ? "" : "s"} auto-synced.` : "";
-      setToast(
-        (data.releveled
-          ? `Added to staging — “${u.title}” is on staging and ${u.authorName}’s theme is caught up.`
-          : `Added to staging — but couldn’t auto re-level ${u.authorName}’s branch. Ask your developer.`) +
-          caughtSuffix
-      );
+      setToast(`Added to staging — “${u.title}” is now on staging.`);
+      ackRemoval(u.branch, false);
+      await load();
+    } else if (data.needsConfirm) {
+      // Server backstop: state was stale and this add is destructive. Reload so the
+      // warning panel shows, and prompt the operator to confirm.
+      setToast("This update would remove work already on staging — review and confirm below.");
       await load();
     } else {
       setToast(`Couldn’t add to staging: ${data.detail || data.error}`);
@@ -505,6 +563,7 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
       type: pubType,
       description: pubDesc.trim(),
       picks: picks["__publish__"] || {},
+      ackRemovals: ackRemovals["__publish__"] === true,
     });
     setBusy(null);
     setModal(null);
@@ -512,6 +571,10 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
       setToast(data.version ? `Published ${data.version} — it’s live now.` : "Published — it’s live now.");
       setPubDesc("");
       setPubType("minor");
+      ackRemoval("__publish__", false);
+      await load();
+    } else if (data.needsConfirm) {
+      setToast("This publish would remove content currently live — review and confirm on the Publish button.");
       await load();
     } else {
       setToast(`Couldn’t publish: ${data.detail || data.error}`);
@@ -737,8 +800,19 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
                   />
                 )}
 
+                <RemovalWarning
+                  removals={u.removals}
+                  acked={ackRemovals[u.branch] === true}
+                  onAck={(v) => ackRemoval(u.branch, v)}
+                  context="staging"
+                />
+
                 <div className="flex items-center gap-2" style={{ marginTop: 15, flexWrap: "wrap" }}>
-                  <Btn kind="publish" onClick={() => addToStaging(u)} disabled={!resolved || busyAdd}>
+                  <Btn
+                    kind="publish"
+                    onClick={() => addToStaging(u)}
+                    disabled={!resolved || busyAdd || (u.removals.length > 0 && ackRemovals[u.branch] !== true)}
+                  >
                     <ArrowUpToLine size={16} /> {busyAdd ? "Adding…" : "Add to staging"}
                   </Btn>
                   <Btn kind="ghost" onClick={() => syncFromStaging(u)} disabled={busySync}>
@@ -800,7 +874,11 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
                     <Btn
                       kind="publish"
                       onClick={() => setModal({ kind: "publish" })}
-                      disabled={busy === "publish" || !publishResolved(state)}
+                      disabled={
+                        busy === "publish" ||
+                        !publishResolved(state) ||
+                        (state.staging.publishRemovals.length > 0 && ackRemovals["__publish__"] !== true)
+                      }
                     >
                       <Globe size={16} /> Publish to live
                     </Btn>
@@ -828,6 +906,13 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
                     intro="Staging overlaps with something already live. Pick a version for each file before publishing."
                   />
                 )}
+
+                <RemovalWarning
+                  removals={state.staging.publishRemovals}
+                  acked={ackRemovals["__publish__"] === true}
+                  onAck={(v) => ackRemoval("__publish__", v)}
+                  context="the live site"
+                />
               </>
             )
           )}
@@ -845,9 +930,9 @@ export default function Console({ currentLogin, isAdmin }: { currentLogin: strin
           </span>
         </div>
         <p style={{ fontSize: 13, color: C.muted, margin: "0 0 12px" }}>
-          Each person’s preview theme. Themes with no changes of their own are caught up to staging
-          automatically when the team stages or publishes. A theme with its own work stays put — Sync it
-          when you’re ready. If you edit locally, <code style={{ fontFamily: MONO, fontSize: 12 }}>git pull</code> before you push.
+          Each person’s preview theme. Themes no longer sync automatically — if you’re about to do a batch
+          of work, Sync from staging first so you build on the latest. After syncing, refresh your working
+          copy / Shopify theme (<code style={{ fontFamily: MONO, fontSize: 12 }}>git pull</code> if you edit locally).
         </p>
 
         <div className="flex flex-col" style={{ gap: 12, marginBottom: 30 }}>

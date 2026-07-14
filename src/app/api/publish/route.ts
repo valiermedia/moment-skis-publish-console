@@ -2,9 +2,8 @@ import { NextResponse } from "next/server";
 import { requireAuthorized, nowISO, authorFor } from "@/lib/guard";
 import { parsePicks } from "@/lib/picks";
 import { config } from "@/lib/config";
-import { publishAsVersion, type VersionType } from "@/lib/git";
+import { publishAsVersion, previewMerge, type VersionType } from "@/lib/git";
 import { recordAudit, setLiveVersion } from "@/lib/db";
-import { catchUpIdleThemes } from "@/lib/theme-catchup";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -24,7 +23,7 @@ export async function POST(req: Request) {
   if (!gate.ok) return gate.response;
   const { login } = gate.user;
 
-  let body: { type?: string; description?: string; picks?: unknown } = {};
+  let body: { type?: string; description?: string; picks?: unknown; ackRemovals?: boolean } = {};
   try {
     body = await req.json();
   } catch {
@@ -38,6 +37,16 @@ export async function POST(req: Request) {
   const picks = parsePicks(body.picks);
 
   try {
+    // Guard: refuse a publish that would DELETE/REVERT content currently live, unless
+    // the operator has explicitly acknowledged the destructive change.
+    const preview = await previewMerge(config.stagingBranch, config.liveBranch);
+    if (preview.removals.length > 0 && body.ackRemovals !== true) {
+      return NextResponse.json(
+        { error: "This publish would remove content currently live. Confirm to proceed.", needsConfirm: true, removals: preview.removals },
+        { status: 409 }
+      );
+    }
+
     const res = await publishAsVersion({
       type,
       description,
@@ -60,13 +69,7 @@ export async function POST(req: Request) {
       at: nowISO(),
     });
 
-    // Keep every idle theme current with staging as part of going live, so the
-    // team's previews all track the QA trunk. Safe fast-forwards only; best-effort.
-    const caughtUp = (await catchUpIdleThemes(login))
-      .filter((r) => r.caughtUp)
-      .map((r) => r.branch);
-
-    return NextResponse.json({ ok: true, version: res.version, sha: res.liveSha, caughtUp });
+    return NextResponse.json({ ok: true, version: res.version, sha: res.liveSha });
   } catch (e) {
     return NextResponse.json(
       { error: "Could not publish to live", detail: (e as Error).message },

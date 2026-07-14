@@ -23,9 +23,21 @@ export interface FileConflict {
   ours: DiffLine[];
   theirs: DiffLine[];
 }
+/**
+ * A "clean" (conflict-free) merge can still be destructive: it may delete a file the
+ * target currently has, or strip out content the target has (e.g. a stale branch
+ * reverting someone else's work). These are surfaced so a human confirms before it ships.
+ */
+export interface FileRemoval {
+  file: string;
+  kind: "delete" | "revert"; // whole file removed, or net content loss
+  linesRemoved: number;
+  lastAuthor: string; // who last changed this file on the target
+}
 export interface MergePreview {
   clean: boolean;
   conflicts: FileConflict[];
+  removals: FileRemoval[];
 }
 export interface BranchAhead {
   branch: string;
@@ -242,8 +254,57 @@ function parseConflictFile(content: string): { ours: DiffLine[]; theirs: DiffLin
 }
 
 /**
- * Preview merging `source` into `target` (does NOT push). Returns clean flag and,
- * on conflict, the per-file two-column data the UI renders.
+ * After a clean `merge --no-commit` in `wt` (HEAD = target), report what the merge
+ * would REMOVE from the target: files it deletes, and files whose content it net-reduces
+ * (a stale branch reverting existing work). Additions are never flagged. Each removal is
+ * attributed to whoever last changed that file on the target, so a human can judge it.
+ */
+async function computeRemovals(wt: SimpleGit): Promise<FileRemoval[]> {
+  const nameStatus = (await wt.raw(["diff", "--cached", "--name-status", "HEAD"])).trim();
+  if (!nameStatus) return [];
+  const numstat = (await wt.raw(["diff", "--cached", "--numstat", "HEAD"])).trim();
+  const nums = new Map<string, { added: number; deleted: number }>();
+  for (const line of numstat ? numstat.split("\n") : []) {
+    const parts = line.split("\t");
+    if (parts.length < 3) continue;
+    const file = parts.slice(2).join("\t");
+    nums.set(file, { added: Number(parts[0]) || 0, deleted: Number(parts[1]) || 0 });
+  }
+  const out: FileRemoval[] = [];
+  for (const line of nameStatus.split("\n")) {
+    const parts = line.split("\t");
+    const st = parts[0] || "";
+    const file = parts.slice(1).join("\t");
+    if (!file) continue;
+    const n = nums.get(file) || { added: 0, deleted: 0 };
+    let kind: "delete" | "revert" | null = null;
+    if (st.startsWith("D")) kind = "delete";
+    else if (st.startsWith("M") && n.deleted > n.added) kind = "revert"; // net content loss
+    if (!kind) continue;
+    let lastAuthor = "";
+    try {
+      const line = (await wt.raw(["log", "-1", "--format=%an%x1f%s", "HEAD", "--", file])).trim();
+      const [an, subj = ""] = line.split("\x1f");
+      if (/bot/i.test(an)) {
+        // Shopify sync commits ("Update from Shopify for theme moment-theme/<person>")
+        // hide the real owner behind shopify[bot] — recover the person from the message.
+        const m = subj.match(/theme\s+(\S+)/i);
+        const ref = m ? m[1] : "";
+        lastAuthor = (ref.includes("/") ? ref.split("/").pop() : ref) || an;
+      } else {
+        lastAuthor = an;
+      }
+    } catch {
+      lastAuthor = "";
+    }
+    out.push({ file, kind, linesRemoved: n.deleted, lastAuthor });
+  }
+  return out;
+}
+
+/**
+ * Preview merging `source` into `target` (does NOT push). Returns clean flag,
+ * per-file conflict data, and any destructive removals a clean merge would make.
  */
 export async function previewMerge(source: string, target: string): Promise<MergePreview> {
   return withLock(async () => {
@@ -258,19 +319,24 @@ export async function previewMerge(source: string, target: string): Promise<Merg
       await wt.raw(["merge", "--no-commit", "--no-ff", remoteRef(source)]).catch(() => {});
       const status = (await wt.raw(["diff", "--name-only", "--diff-filter=U"])).trim();
       const files = status ? status.split("\n").map((s) => s.trim()).filter(Boolean) : [];
-      if (files.length === 0) return { clean: true, conflicts: [] };
-      const conflicts: FileConflict[] = files.map((file, i) => {
-        const abs = path.join(dir, file);
-        let content = "";
-        try {
-          content = fs.readFileSync(abs, "utf8");
-        } catch {
-          content = "";
-        }
-        const { ours, theirs } = parseConflictFile(content);
-        return { id: `c${i + 1}`, file, ours, theirs };
-      });
-      return { clean: false, conflicts };
+      if (files.length > 0) {
+        const conflicts: FileConflict[] = files.map((file, i) => {
+          const abs = path.join(dir, file);
+          let content = "";
+          try {
+            content = fs.readFileSync(abs, "utf8");
+          } catch {
+            content = "";
+          }
+          const { ours, theirs } = parseConflictFile(content);
+          return { id: `c${i + 1}`, file, ours, theirs };
+        });
+        return { clean: false, conflicts, removals: [] };
+      }
+      // Clean merge — still check whether it would DELETE or REVERT content the target
+      // currently has (the silent-destruction case), so a human can confirm.
+      const removals = await computeRemovals(wt);
+      return { clean: true, conflicts: [], removals };
     } finally {
       try {
         await wt.raw(["merge", "--abort"]);

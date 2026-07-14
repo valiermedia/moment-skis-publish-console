@@ -2,24 +2,29 @@ import { NextResponse } from "next/server";
 import { requireAuthorized, nowISO, authorFor } from "@/lib/guard";
 import { parsePicks } from "@/lib/picks";
 import { config } from "@/lib/config";
-import { mergeAndPush } from "@/lib/git";
+import { mergeAndPush, previewMerge } from "@/lib/git";
 import { recordAudit } from "@/lib/db";
-import { catchUpIdleThemes } from "@/lib/theme-catchup";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * Add an update to staging: (1) merge the branch UP into staging (applying the
- * user's per-file picks if it conflicted), then (2) merge staging back DOWN into
- * the branch to re-level it. Both go through the App token. Shopify follows.
+ * Add an update to staging: merge the branch UP into staging (applying the user's
+ * per-file picks if it conflicted). Goes through the App token; Shopify follows.
+ *
+ * The console deliberately does NOT advance the person's branch afterward (no auto
+ * re-level) and does NOT touch anyone else's theme (no auto catch-up). Advancing a
+ * branch past what its Shopify theme actually holds let a stale Shopify snapshot
+ * silently delete other people's work on the next push, so branches now move only
+ * when their owner deliberately Syncs. Plain 3-way git at add time already preserves
+ * everyone's additions — we rest on that instead of re-implementing it.
  */
 export async function POST(req: Request) {
   const gate = await requireAuthorized();
   if (!gate.ok) return gate.response;
   const { login } = gate.user;
 
-  let body: { branch?: string; picks?: unknown };
+  let body: { branch?: string; picks?: unknown; ackRemovals?: boolean };
   try {
     body = await req.json();
   } catch {
@@ -32,7 +37,17 @@ export async function POST(req: Request) {
   const picks = parsePicks(body.picks);
 
   try {
-    // 1) merge branch UP into staging
+    // Guard: a clean merge can still DELETE/REVERT work already on staging (stale-branch
+    // overwrite). Refuse unless the operator has explicitly acknowledged it.
+    const preview = await previewMerge(branch, config.stagingBranch);
+    if (preview.removals.length > 0 && body.ackRemovals !== true) {
+      return NextResponse.json(
+        { error: "This update would remove work already on staging. Confirm to proceed.", needsConfirm: true, removals: preview.removals },
+        { status: 409 }
+      );
+    }
+
+    // merge branch UP into staging (no re-level down, no catch-up of other themes)
     const up = await mergeAndPush(
       branch,
       config.stagingBranch,
@@ -49,53 +64,10 @@ export async function POST(req: Request) {
       at: nowISO(),
     });
 
-    // 2) re-level: merge staging back DOWN into the branch (normally a fast-forward)
-    let releveled = true;
-    let relevelNote: string | null = null;
-    try {
-      const down = await mergeAndPush(
-        config.stagingBranch,
-        branch,
-        {},
-        `Re-level "${branch}" to staging (via Publish Console)`,
-        authorFor(login),
-        false // fast-forward the person-branch up to staging (no phantom commit)
-      );
-      recordAudit({
-        userLogin: login,
-        action: "relevel-branch",
-        target: branch,
-        detail: `merged staging down`,
-        resultSha: down.sha,
-        at: nowISO(),
-      });
-    } catch (e) {
-      // Staging IS updated; only the re-level down hit a snag. Surface, don't fail hard.
-      releveled = false;
-      relevelNote = (e as Error).message;
-      recordAudit({
-        userLogin: login,
-        action: "relevel-branch-failed",
-        target: branch,
-        detail: relevelNote,
-        at: nowISO(),
-      });
-    }
-
-    // 3) staging just moved — bring every OTHER idle theme (behind, no own work)
-    //    up to staging with a safe fast-forward, so nobody has to remember to sync.
-    //    Themes with their own commits are left for their owner. Best-effort.
-    const caughtUp = (await catchUpIdleThemes(login, [branch]))
-      .filter((r) => r.caughtUp)
-      .map((r) => r.branch);
-
     return NextResponse.json({
       ok: true,
       stagingSha: up.sha,
       addedToStaging: up.merged || up.alreadyUpToDate,
-      releveled,
-      relevelNote,
-      caughtUp,
     });
   } catch (e) {
     return NextResponse.json(

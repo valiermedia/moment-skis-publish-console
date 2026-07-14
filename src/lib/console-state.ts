@@ -9,6 +9,7 @@ import {
   computeNextVersions,
   themeStatuses,
   type FileConflict,
+  type FileRemoval,
   type Version,
 } from "./git";
 import { qaSignoffsFor, recentAudit, getLiveVersion, type QaSignoff, type AuditEntry } from "./db";
@@ -25,6 +26,7 @@ export interface Update {
   ahead: number;
   clean: boolean;
   conflicts: FileConflict[];
+  removals: FileRemoval[];
   previewUrl: string | null;
   version: string | null;
   behindLive: boolean;
@@ -61,6 +63,7 @@ export interface ConsoleState {
     qa: { signedOff: boolean; signoffs: QaSignoff[] };
     publishClean: boolean;
     publishConflicts: FileConflict[];
+    publishRemovals: FileRemoval[];
     currentVersion: string | null;
     nextVersions: { current: string; major: string; minor: string; patch: string };
   };
@@ -121,6 +124,7 @@ export async function buildConsoleState(currentLogin: string): Promise<ConsoleSt
       ahead: b.ahead,
       clean: preview.clean,
       conflicts: preview.conflicts,
+      removals: preview.removals,
       previewUrl: themeId ? themePreviewUrl(themeId) : null,
       version,
       behindLive: Boolean(stagingVersion && version !== stagingVersion),
@@ -162,7 +166,7 @@ export async function buildConsoleState(currentLogin: string): Promise<ConsoleSt
   const publishPreview =
     staging.ahead > 0
       ? await previewMerge(config.stagingBranch, config.liveBranch)
-      : { clean: true, conflicts: [] as FileConflict[] };
+      : { clean: true, conflicts: [] as FileConflict[], removals: [] as FileRemoval[] };
 
   const signoffs = qaSignoffsFor(staging.sha);
   const cur = personFor(currentLogin);
@@ -195,6 +199,7 @@ export async function buildConsoleState(currentLogin: string): Promise<ConsoleSt
       qa: { signedOff: signoffs.length > 0, signoffs },
       publishClean: publishPreview.clean,
       publishConflicts: publishPreview.conflicts,
+      publishRemovals: publishPreview.removals,
       currentVersion: stagingVersion,
       nextVersions,
     },

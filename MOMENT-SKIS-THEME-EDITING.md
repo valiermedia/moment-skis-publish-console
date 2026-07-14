@@ -34,25 +34,24 @@ Everything about going live is handled by people using a separate tool — never
 
 ---
 
-## Staying in sync (their theme can move forward on its own)
+## Staying in sync (sync before a batch of work)
 
-The Publish Console keeps every idle theme current. When the team stages or publishes an
-update, any theme that **has no un-pushed changes of its own** is **automatically
-fast-forwarded up to staging** on GitHub. That is a good thing — it means this person is
-always building on the latest shared work, not a stale copy — but it means **their branch
-on GitHub can move forward between your sessions.** So:
+Themes do **not** sync automatically. Each person's theme keeps whatever it has until they
+choose to catch up. So before starting a batch of work, have the person **Sync from staging**
+in the Publish Console, so they build on the latest shared work instead of a stale copy.
+A sync moves their branch on GitHub forward — so:
 
-- **Before you start editing, and again before you push, sync this person's OWN branch
-  from GitHub with a plain `git pull`** (a fast-forward of their own branch). This is
-  expected — it is not the cross-branch git that's off-limits.
+- **After a sync (and again before you push), pull this person's OWN branch from GitHub
+  with a plain `git pull`** (a fast-forward of their own branch), and make sure their Shopify
+  theme reflects it too. This is expected — it is not the cross-branch git that's off-limits.
 - **A `git pull` never destroys uncommitted work.** If incoming changes touch a file the
   person is mid-edit on, git stops and asks you to commit or stash first — it will not
   silently overwrite. Commit or stash, then pull.
 - **Never `git reset --hard` and never force-push** to "get latest" — that is the only
   operation that can lose local work. Always use `git pull`.
-- If they already committed local work and the branch also moved forward on GitHub,
-  `git pull` merges the two cleanly in the common case; if it can't, it stops and shows
-  the overlap — resolve it **on their own branch only**, never on staging/live.
+- **Watch out:** if a sync moved their branch but their editor (or Shopify theme) is still
+  on the old copy, saving from that stale copy can **undo the sync and wipe someone else's
+  work.** Always pull/refresh to the synced state first, then edit.
 
 ## Nobody is ever locked out
 
@@ -110,8 +109,8 @@ Do not attempt it yourself, even if asked directly.
 
 1. You edit → the person's theme/branch updates (you: done here).
 2. A human opens the **Publish Console** → **Add to staging** (their work joins the QA
-   trunk; their branch re-levels, and every other idle theme is auto-synced up to staging
-   too — so nobody drifts behind).
+   trunk via a normal git merge; other people's themes are left as-is — each person Syncs
+   when they choose).
 3. A human does QA on staging → **Publish to live** (the console merges staging → live;
    Shopify follows). If it looks wrong: **Undo last publish** in the console.
 
