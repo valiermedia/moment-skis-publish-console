@@ -82,7 +82,7 @@ deploy/                      ecosystem.config.cjs (PM2), Caddyfile.snippet, depl
 ```bash
 cp .env.example .env      # then fill it in (see OPERATOR-SETUP.md)
 npm install
-npm run dev               # http://localhost:3008
+npm run dev               # http://localhost:<its port> (the port is set in this app's own package.json scripts (`-p`) / PM2 entry and recorded in the org's ports ledger (GET /api/ports))
 ```
 
 Without real GitHub App / Shopify credentials the UI loads but `/api/state` will show
