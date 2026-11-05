@@ -18,6 +18,11 @@ export const authConfig = {
     GitHub({
       clientId: process.env.AUTH_GITHUB_ID,
       clientSecret: process.env.AUTH_GITHUB_SECRET,
+      // GitHub now sends an RFC 9207 `iss` parameter on the OAuth callback. The
+      // installed @auth/core (0.37.2) checks it against the provider issuer, which
+      // falls back to https://authjs.dev and fails every login. This is the value
+      // @auth/core 0.41.3 ships for the GitHub provider.
+      issuer: "https://github.com/login/oauth",
       authorization: { params: { scope: "read:user user:email read:org repo" } },
       // Crash-safe mapping: if GitHub returned an error body (no id), log the raw
       // response instead of throwing OAuthProfileParseError on undefined.toString().
